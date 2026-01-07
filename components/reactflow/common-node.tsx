@@ -1,65 +1,75 @@
-import React, { memo } from "react";
+import React from "react";
 import { Handle, Position } from "@xyflow/react";
 
-const positionMap = {
-    left: Position.Left,
-    right: Position.Right,
-    top: Position.Top,
-    bottom: Position.Bottom,
+type Port = {
+    id: string;
+    label: string;
+    position: "left" | "right";
 };
 
-export default memo(({ data, isConnectable }: any) => {
+type CommonNodeProps = {
+    data: {
+        label: string;
+        color: string;
+        inputs: Port[];
+        outputs: Port[];
+        isSelected?: boolean;
+    };
+};
+
+const SIZE = 60;
+
+const CommonNode: React.FC<CommonNodeProps> = ({ data }) => {
     return (
-        <div className="rounded-xl bg-white shadow-lg border border-gray-200 min-w-[220px]">
+        <div
+            style={{
+                width: SIZE,
+                height: SIZE,
+                borderRadius: 8,
+                background: "#020617",
+                border: `2px solid ${data.color}`,
+                color: "#e5e7eb",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 8,
+                fontWeight: 400,
+                textAlign: "center",
+                position: "relative",
+                boxShadow: data.isSelected
+                    ? `0 0 0 2px ${data.color}`
+                    : "none",
+            }}
+        >
+            {data.label}
 
-            {/* Header */}
-            <div
-                className="rounded-t-xl px-3 py-2 text-white text-sm font-semibold"
-                style={{ background: data.color || "#4f46e5" }}
-            >
-                {data.label}
-            </div>
-
-            {/* Body */}
-            <div className="p-3 text-xs text-gray-600">
-                JSON driven dynamic node
-            </div>
-
-            {/* INPUT HANDLES */}
-            {data.inputs?.map((input: any, index: number) => (
+            {data.inputs.map((input) => (
                 <Handle
                     key={input.id}
                     id={input.id}
                     type="target"
-                    position={positionMap[input.position]}
-                    isConnectable={isConnectable}
+                    position={Position.Left}
                     style={{
-                        top: 45 + index * 22,
-                        width: 10,
-                        height: 10,
-                        background: "#22c55e",
-                        border: "2px solid white",
+                        top: `${SIZE / 2}px`,
+                        background: data.color,
                     }}
                 />
             ))}
 
-            {/* OUTPUT HANDLES */}
-            {data.outputs?.map((output: any, index: number) => (
+            {data.outputs.map((output) => (
                 <Handle
                     key={output.id}
                     id={output.id}
                     type="source"
-                    position={positionMap[output.position]}
-                    isConnectable={isConnectable}
+                    position={Position.Right}
                     style={{
-                        top: 45 + index * 22,
-                        width: 10,
-                        height: 10,
-                        background: "#ef4444",
-                        border: "2px solid white",
+                        top: `${SIZE / 2}px`,
+                        background: data.color,
                     }}
                 />
             ))}
         </div>
     );
-});
+};
+
+export default CommonNode;
