@@ -3,7 +3,7 @@ import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
 import React from "react";
 import Link from "next/link";
-import NavBar from "@/app/components/NavBar";
+import NavBar from "@/app/components/nav-bar";
 
 
 

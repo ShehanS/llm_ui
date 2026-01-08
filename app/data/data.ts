@@ -34,3 +34,39 @@ export interface IResponseMessage<T> {
     data: T;
     error: string | null;
 }
+
+export interface INode {
+    id: string | null;
+    type: string | null;
+    label: string | null;
+    color: string | null;
+    position: IPosition | null;
+    config: any | null;
+}
+
+export interface IEdge {
+    source: string | null;
+    target: string | null;
+    sourceHandle: string | null
+
+}
+
+
+export interface IPosition {
+    x: number | null;
+    y: number | null;
+}
+
+export interface IDefinition {
+    edges: IEdge[];
+    nodes: INode[];
+}
+
+export interface IWorkflow {
+    id: number | null;
+    flowId: string | null;
+    flowName: string | null;
+    description: string | null;
+    definition: IDefinition | null;
+    state: boolean;
+}

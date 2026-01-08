@@ -5,7 +5,7 @@ import { NODE_CATALOG } from "@/app/data/nodes";
 
 const NODE_PREVIEW_SIZE = 120;
 
-const NodeSidebar = () => {
+const NodeSideBar = () => {
     const onDragStart = (event: React.DragEvent, nodeType: string) => {
         event.dataTransfer.setData("application/reactflow", nodeType);
         event.dataTransfer.effectAllowed = "move";
@@ -42,4 +42,4 @@ const NodeSidebar = () => {
     );
 };
 
-export default NodeSidebar;
+export default NodeSideBar;

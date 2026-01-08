@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Button } from "@/components/ui/button";
 import {SideMenu} from "@/components/SideMenu";
-import Agents from "@/app/components/Agents";
+import Agents from "@/app/components/agents";
 
 const Page: FC = () => {
     return (
