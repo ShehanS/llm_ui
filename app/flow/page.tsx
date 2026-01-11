@@ -2,7 +2,6 @@
 
 import React, {FC, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {addEdge, Controls, MiniMap, ReactFlow, ReactFlowInstance, useEdgesState, useNodesState} from "@xyflow/react";
-import {useParams} from "next/navigation";
 import "@xyflow/react/dist/style.css";
 import CommonNode from "../../components/reactflow/common-node";
 import {NODE_CATALOG} from "@/app/data/nodes";
@@ -107,7 +106,7 @@ const Page: FC = () => {
         [rfInstance, setNodes]
     );
 
-    const updateNodeConfig = (propName: string, value: any) => {
+    const updateNodeConfig = (propName: any, value: any) => {
         setNodes((nds) =>
             nds.map((node) =>
                 node.id !== selectedNodeId
@@ -116,15 +115,40 @@ const Page: FC = () => {
                         ...node,
                         data: {
                             ...node.data,
-                            inputProps: node.data.inputProps.map((p: any) =>
-                                p.name === propName ? {...p, value} : p
-                            ),
+                            inputProps: node.data.inputProps.map((p: any) => {
+                                const isMapper =
+                                    typeof propName === "object" &&
+                                    propName?.name === "mapper" &&
+                                    p.name === "mapper";
+
+                                if (isMapper) {
+                                    return {
+                                        ...p,
+                                        value: {
+                                            ...(typeof p.value === "object" &&
+                                            !Array.isArray(p.value)
+                                                ? p.value
+                                                : {}),
+                                            [propName.type]: value,
+                                        },
+                                    };
+                                }
+                                if (p.name === propName) {
+                                    return {
+                                        ...p,
+                                        value,
+                                    };
+                                }
+
+                                return p;
+                            }),
                         },
                     }
             )
         );
-    };
 
+
+    };
     useEffect(() => {
         const openedFlow: IWorkflow = workflow
         if (openedFlow) {
@@ -150,10 +174,12 @@ const Page: FC = () => {
                 source: e.source,
                 target: e.target,
                 sourceHandle: e.sourceHandle
-                    ? `out-${e.sourceHandle}`
+                    ? e.sourceHandle
                     : undefined,
                 animated: true,
             }));
+
+            console.log(loadedEdges)
 
             setNodes([]);
             setEdges([]);
@@ -232,10 +258,12 @@ const Page: FC = () => {
                             source: e.source,
                             target: e.target,
                             sourceHandle: e.sourceHandle
-                                ? e.sourceHandle.replace("out-", "")
+                                ? e.sourceHandle
                                 : "default",
                         })),
                     };
+
+                    console.log(wf)
                     const workspace = {
                         flowId: workflow?.flowId ? workflow?.flowId : getId(),
                         flowName: fileName,
