@@ -131,44 +131,23 @@ export const NODE_CATALOG = {
         ],
         "outputs": []
     },
-    "trigger.llm": {
-        "type": "trigger.llm",
-        "label": "LLM Model",
+    "trigger.aiAgent": {
+        "type": "trigger.aiAgent",
+        "label": "AI Agent",
         "color": "#970ec4",
         "config": {
             "icon": "",
             "inputProps": [
-                {
-                    "type": "select",
-                    "name": "LLM Model",
-                    "displayName": "Select Option",
-                    "values": [
-                        { "name": "OpenAI", "value": "OpenAI" },
-                        { "name": "Gemini", "value": "Gemini" }
-                    ],
-                    "defaultValue": { "name": "OpenAI", "value": "OpenAI" },
-                    "required": true,
-                    "value": null
-                },
+
                 {
                     "type": "text",
                     "values": [],
-                    "name": "apiKey",
+                    "name": "agentURL",
                     "defaultValue": "",
                     "value": "",
-                    "displayName": "API Key",
+                    "displayName": "Agent URL",
                     "required": true
-                },
-                {
-                    "type": "number",
-                    "values": [],
-                    "name": "temperature",
-                    "defaultValue": 0,
-                    "value": 0,
-                    "displayName": "Temperature",
-                    "required": true
-                },
-
+                }
             ]
         },
         "inputs": [
