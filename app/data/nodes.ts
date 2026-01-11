@@ -186,9 +186,22 @@ export const NODE_CATALOG = {
             "icon": "whatsapp",
             "inputProps": [
                 {
+                    "type": "select",
+                    "name": "method",
+                    "displayName": "HTTP Method",
+                    "values": [
+                        { "name": "POST", "value": "POST" },
+                        { "name": "GET", "value": "GET" },
+                        { "name": "GET & POST", "value": "GET,POST" }
+                    ],
+                    "defaultValue": "GET",
+                    "value": "POST",
+                    "required": true
+                },
+                {
                     "type": "text",
                     "values": [],
-                    "name": "webhook",
+                    "name": "path",
                     "defaultValue": "",
                     "value": "/webhook/{flowId}",
                     "displayName": "Webhook path",
