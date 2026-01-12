@@ -118,8 +118,8 @@ const Page: FC = () => {
                             inputProps: node.data.inputProps.map((p: any) => {
                                 const isMapper =
                                     typeof propName === "object" &&
-                                    propName?.name === "mapper" &&
-                                    p.name === "mapper";
+                                   propName?.name === "inputMapper" || propName?.name === "outputMapper" &&
+                                   propName?.name === "inputMapper" || propName?.name === "outputMapper";
 
                                 if (isMapper) {
                                     return {
@@ -146,6 +146,7 @@ const Page: FC = () => {
                     }
             )
         );
+
 
 
     };

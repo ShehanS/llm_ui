@@ -1,103 +1,75 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 
 type MapperItem = {
     key: string;
     value: string;
 };
 
-
-type Input = {
-    name: string;
-    value: string;
-};
-
 type ObjectMapperProps = {
-    value?: any;
-    onChange: (name: string | any, value: string | MapperItem[] | any) => void;
+    value?: {
+        name: string;
+        value?: {
+            payloadSource?: string;
+            payloadExpression?: string;
+            map?: MapperItem[];
+        };
+    };
+    onChange: (name: string, value: any) => void;
 };
 
 export const ObjectMapper: React.FC<ObjectMapperProps> = ({
                                                               value,
                                                               onChange,
                                                           }) => {
+    const name = value?.name;
 
+    const detectMode = () => {
+        if (value?.value?.map) return "mapper";
+        if (value?.value?.payloadExpression) return "payloadExpression";
+        return "payloadSource";
+    };
 
-    const currentMode =
-        (Object.keys(value?.value ?? {})[0] as
-            | "payloadSource"
-            | "payloadExpression"
-            | "mapper") ?? "payloadSource";
+    const [mode, setMode] = useState<
+        "payloadSource" | "payloadExpression" | "mapper"
+        >(detectMode());
 
-    const [mode, setMode] = useState<"payloadSource" | "payloadExpression" | "mapper">(currentMode);
-    const [payloadSource, setPayloadSource] = useState<Input>({
-        name: "payloadSource",
-        value: "body",
-    });
-
-    const [payloadExpression, setPayloadExpression] = useState<Input>({
-        name: "payloadExpression",
-        value: "",
-    });
-
+    const [payloadSource, setPayloadSource] = useState("body");
+    const [payloadExpression, setPayloadExpression] = useState("");
     const [mapper, setMapper] = useState<MapperItem[]>([]);
 
+    /* -------- Sync from parent -------- */
     useEffect(() => {
-        if (!value) return;
-        setPayloadSource({
-            name: "payloadSource",
-            value: value.payloadSource ?? "body",
-        });
-        setPayloadExpression({
-            name: "payloadExpression",
-            value: value.payloadExpression ?? "",
-        });
+        if (!value?.value) return;
 
-        setMapper(value.value?.map ?? []);
-
-        if (currentMode === "map"){
-            setMode("mapper");
-        }else if(currentMode === "payloadExpression"){
-            setMode("payloadExpression");
-        }else {
-            setMode("payloadSource");
-        }
+        setPayloadSource(value.value.payloadSource ?? "body");
+        setPayloadExpression(value.value.payloadExpression ?? "");
+        setMapper(structuredClone(value.value.map ?? []));
+        setMode(detectMode());
     }, [value]);
 
-    const emitChange = (
-        currentMode: string,
-        newPayloadSource: Input,
-        newPayloadExpression: Input,
-        newMapper: MapperItem[]
-    ) => {
-        if (currentMode === "payloadSource") {
-            const mapper = {
-                name: "mapper",
-                type: "payloadSource"
-            }
-            onChange(mapper, newPayloadSource.value as any);
-        } else if (currentMode === "payloadExpression") {
-            const mapper = {
-                name: "mapper",
-                type: "payloadExpression"
-            }
-            onChange(mapper, newPayloadExpression.value as any);
+    const emit = (next: any) => {
+        if (!name) return;
+        onChange(name, next);
+    };
+
+    /* -------- Mode change -------- */
+    const changeMode = (nextMode: typeof mode) => {
+        setMode(nextMode);
+
+        if (nextMode === "payloadSource") {
+            emit({ payloadSource });
+        } else if (nextMode === "payloadExpression") {
+            emit({ payloadExpression });
         } else {
-            const mapper = {
-                name: "mapper",
-                type: "map"
-            }
-            onChange(mapper, newMapper as any);
+            emit({ map: mapper.length ? mapper : [{ key: "", value: "" }] });
         }
     };
 
-
+    /* -------- Mapper ops -------- */
     const addMapper = () => {
-        const base = Array.isArray(value.value?.map) ? value.value?.map : [];
-
-        const next = [...base, {key: "", value: ""}];
-
+        const next = [...structuredClone(mapper), { key: "", value: "" }];
         setMapper(next);
-        emitChange(mode, payloadSource, payloadExpression, next);
+        emit({ map: next });
     };
 
     const updateMapper = (
@@ -105,107 +77,75 @@ export const ObjectMapper: React.FC<ObjectMapperProps> = ({
         field: "key" | "value",
         val: string
     ) => {
-        const next = [...value.value?.map];
-        next[index] = {...next[index], [field]: val};
+        const next = structuredClone(mapper);
+        next[index] = { ...next[index], [field]: val };
         setMapper(next);
-        emitChange(mode, payloadSource, payloadExpression, next);
+        emit({ map: next });
     };
 
     const removeMapper = (index: number) => {
-        const next = value.value?.map?.filter((_, i) => i !== index);
+        const next = mapper.filter((_, i) => i !== index);
         setMapper(next);
-        emitChange(mode, payloadSource, payloadExpression, next);
+        emit({ map: next });
     };
 
+    /* -------- UI -------- */
     return (
-        <div>
         <div className="space-y-2">
-                <label className="block text-sm text-gray-300">
-                    Mapper
-                </label>
+            {/* MODE SELECT */}
             <select
                 className="w-full rounded border border-gray-700 px-3 py-2 bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={mode}
-                onChange={(e) => {
-
-                    setMode(e.target.value as any);
-                    if (e.target.value === "payloadSource") {
-                        const type = {
-                            payloadSource: ""
-                        }
-                        onChange("mapper", type);
-                    } else if (e.target.value === "payloadExpression") {
-                        const type = {
-                            payloadExpression: ""
-                        }
-                        onChange("mapper", type);
-                    } else {
-                        const type = {
-                            map: [{"key": "", "value": ""}]
-                        }
-                        onChange("mapper", type);
-                    }
-
-                }}
+                onChange={(e) => changeMode(e.target.value as any)}
             >
                 <option value="payloadSource">Payload Source</option>
                 <option value="payloadExpression">Payload Expression</option>
                 <option value="mapper">Object Mapper</option>
             </select>
-            <label className="block text-sm text-gray-300">
-                Values
-            </label>
+
+            <label className="block text-sm text-gray-300">Values</label>
+
+            {/* PAYLOAD SOURCE */}
             {mode === "payloadSource" && (
                 <select
                     className="w-full rounded border border-gray-700 px-3 py-2 bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={value?.value?.payloadSource ?? ""}
+                    value={payloadSource}
                     onChange={(e) => {
-                        const newPayloadSource = {
-                            name: "payloadSource",
-                            value: e.target.value,
-                        };
-                        setPayloadSource(newPayloadSource);
-                        emitChange(mode, newPayloadSource, payloadExpression, mapper);
+                        setPayloadSource(e.target.value);
+                        emit({ payloadSource: e.target.value });
                     }}
                 >
                     <option value="body">Body only</option>
                     <option value="headers">Headers only</option>
                     <option value="query">Query params</option>
                     <option value="all">Full request</option>
-                    <option value="expression">Expression</option>
                 </select>
             )}
 
-
+            {/* PAYLOAD EXPRESSION */}
             {mode === "payloadExpression" && (
                 <input
                     type="text"
                     placeholder="{{body.message}}"
                     className="w-full rounded border border-gray-700 px-3 py-2 bg-gray-900 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={value?.value?.payloadExpression ?? ""}
+                    value={payloadExpression}
                     onChange={(e) => {
-                        const newPayloadExpression = {
-                            name: "payloadExpression",
-                            value: e.target.value,
-                        };
-                        setPayloadExpression(newPayloadExpression);
-                        emitChange(mode, payloadSource, newPayloadExpression, mapper);
+                        setPayloadExpression(e.target.value);
+                        emit({ payloadExpression: e.target.value });
                     }}
                 />
             )}
 
-
+            {/* OBJECT MAPPER */}
             {mode === "mapper" && (
                 <div className="space-y-2">
-
-                    {(!value.value?.map || value.value?.map?.length === 0) && (
+                    {mapper.length === 0 && (
                         <p className="text-gray-500 text-sm text-center py-4">
                             No mappings yet. Click below to add one.
                         </p>
                     )}
 
-
-                    {value.value?.map?.map((item, index) => (
+                    {mapper.map((item, index) => (
                         <div
                             key={index}
                             className="flex gap-2 items-start"
@@ -227,8 +167,9 @@ export const ObjectMapper: React.FC<ObjectMapperProps> = ({
                                 }
                             />
                             <button
+                                type="button"
                                 onClick={() => removeMapper(index)}
-                                className="px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition-colors font-bold"
+                                className="shrink-0 px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition-colors font-bold"
                             >
                                 ×
                             </button>
@@ -236,6 +177,7 @@ export const ObjectMapper: React.FC<ObjectMapperProps> = ({
                     ))}
 
                     <button
+                        type="button"
                         onClick={addMapper}
                         className="w-full border-2 border-dashed border-gray-700 py-3 text-sm text-gray-400 hover:border-gray-500 hover:text-gray-300 transition-colors rounded"
                     >
@@ -243,7 +185,6 @@ export const ObjectMapper: React.FC<ObjectMapperProps> = ({
                     </button>
                 </div>
             )}
-        </div>
         </div>
     );
 };

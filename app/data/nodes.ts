@@ -8,13 +8,22 @@ export const NODE_CATALOG = {
             "icon": "webhook",
             "inputProps": [
                 {
+                    "type": "text",
+                    "values": [],
+                    "name": "path",
+                    "defaultValue": "",
+                    "value": "/webhook/{flowId}",
+                    "displayName": "Webhook path",
+                    "required": true
+                },
+                {
                     "type": "select",
                     "name": "method",
                     "displayName": "HTTP Method",
                     "values": [
-                        { "name": "POST", "value": "POST" },
-                        { "name": "GET", "value": "GET" },
-                        { "name": "GET & POST", "value": "GET,POST" }
+                        {"name": "POST", "value": "POST"},
+                        {"name": "GET", "value": "GET"},
+                        {"name": "GET & POST", "value": "GET,POST"}
                     ],
                     "defaultValue": "GET",
                     "value": "POST",
@@ -41,8 +50,7 @@ export const NODE_CATALOG = {
                     "defaultValue": "",
                     "value": "",
                     "required": false,
-                    "placeholder": "",
-                    "isEnable": false
+                    "placeholder": ""
 
                 }
             ]
@@ -150,22 +158,30 @@ export const NODE_CATALOG = {
                 },
                 {
                     "type": "mapper",
-                    "name": "mapper",
-                    "displayName": "Object Mapper",
+                    "name": "inputMapper",
+                    "displayName": "Input Mapper",
                     "defaultValue": "",
                     "value": "",
                     "required": false,
-                    "placeholder": "",
-                    "isEnable": false
+                    "placeholder": ""
+                },
+                {
+                    "type": "mapper",
+                    "name": "outputMapper",
+                    "displayName": "Output Mapper",
+                    "defaultValue": "",
+                    "value": "",
+                    "required": false,
+                    "placeholder": ""
 
                 }
             ]
         },
         "inputs": [
-            { "id": "in-default", "label": "Input", "position": "left" }
+            {"id": "default", "label": "Input", "position": "left"}
         ],
         "outputs": [
-            { "id": "out-default", "label": "Default", "position": "right" }
+            {"id": "default", "label": "Default", "position": "right"}
         ]
     },
     "trigger.whatsapp": {

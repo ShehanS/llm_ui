@@ -13,14 +13,11 @@ export const NodeConfigForm: React.FC<Props> = ({ node, onChange }) => {
 
     return (
         <div className="space-y-2 text-white">
-            {/* Node Title */}
             <h3 className="text-lg font-semibold border-b border-gray-800 pb-2">
-                {node.data.label}
             </h3>
 
             {node.data.inputProps.map((prop: any) => {
                 switch (prop?.type) {
-                    /* ---------- TEXT ---------- */
                     case "text":
                         return (
                             <div
@@ -41,7 +38,6 @@ export const NodeConfigForm: React.FC<Props> = ({ node, onChange }) => {
                             </div>
                         );
 
-                    /* ---------- NUMBER ---------- */
                     case "number":
                         return (
                             <div
@@ -82,7 +78,7 @@ export const NodeConfigForm: React.FC<Props> = ({ node, onChange }) => {
                                         onChange(prop.name, e.target.value)
                                     }
                                 >
-                                    {prop.values.map((v: any) => (
+                                    {prop.values?.map((v: any) => (
                                         <option
                                             key={v.value}
                                             value={v.value}
@@ -118,6 +114,9 @@ export const NodeConfigForm: React.FC<Props> = ({ node, onChange }) => {
                     case "mapper":
                         return (
                             <div key={prop.name} className="pt-2">
+                                <label className="block text-sm text-gray-300">
+                                    {prop.displayName}
+                                </label>
                                 <ObjectMapper
                                     onChange={onChange}
                                     value={prop}
