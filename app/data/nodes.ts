@@ -147,6 +147,17 @@ export const NODE_CATALOG = {
                     "value": "",
                     "displayName": "Agent URL",
                     "required": true
+                },
+                {
+                    "type": "mapper",
+                    "name": "mapper",
+                    "displayName": "Object Mapper",
+                    "defaultValue": "",
+                    "value": "",
+                    "required": false,
+                    "placeholder": "",
+                    "isEnable": false
+
                 }
             ]
         },
