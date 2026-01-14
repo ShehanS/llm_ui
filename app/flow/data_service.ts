@@ -15,7 +15,7 @@ interface WorkflowStore {
     workflows: IWorkflow[];
     savedWorkflow: any | null;
 
-    traces: IExecutionTrace;
+    traces: IExecutionTrace[];
     traceConnected: boolean;
 
     saveWorkflow: (workflow: IWorkflow) => Promise<void>;
@@ -38,7 +38,7 @@ export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
     workflows: [],
     savedWorkflow: null,
 
-    traces: null,
+    traces: [],
     traceConnected: false,
 
     saveWorkflow: async (workflow) => {
@@ -95,13 +95,13 @@ export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
             traceController = null;
         }
 
-        set({ traces: null, traceConnected: false });
+        set({ traces: [], traceConnected: false });
 
         traceController = openWorkflowTraceWS(
             runId,
             (trace: IExecutionTrace) => {
                 set((state) => ({
-                    traces: trace,
+                    traces: [...state.traces, trace],
                     traceConnected: true
                 }));
             },
@@ -123,6 +123,6 @@ export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
             traceController.close();
             traceController = null;
         }
-        set({ traces: null, traceConnected: false, workflow: null });
+        set({ traces: [], traceConnected: false, workflow: null });
     }
 }));
