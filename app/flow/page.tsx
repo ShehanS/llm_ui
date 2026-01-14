@@ -37,7 +37,9 @@ const Page: FC = () => {
         clear,
         savedWorkflow,
         workflows,
-        openWorkflow
+        openWorkflow,
+        startLiveTrace,
+        traces
     } = useWorkflowStore();
     const [saveDialog, setSaveDialog] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
@@ -202,6 +204,14 @@ const Page: FC = () => {
         setSaveDialog(true);
     };
 
+    useEffect(() => {
+        console.log(traces)
+    }, [traces])
+
+    const debug = async () => {
+        startLiveTrace(workflow.flowId);
+
+    }
 
     useEffect(() => {
         if (!rfInstance || nodes.length === 0 || viewportInitialized.current) return;
@@ -328,6 +338,22 @@ const Page: FC = () => {
                     }}
                 >
                     Open
+                </button>
+
+                <button
+                    onClick={debug}
+                    style={{
+                        position: "absolute",
+                        zIndex: 10,
+                        top: 80,
+                        left: 200,
+                        padding: "8px 12px",
+                        background: "#6366f1",
+                        color: "white",
+                        borderRadius: 6,
+                    }}
+                >
+                    Debug
                 </button>
 
                 <ReactFlow

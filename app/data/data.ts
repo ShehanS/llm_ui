@@ -70,3 +70,16 @@ export interface IWorkflow {
     definition: IDefinition | null;
     state: boolean;
 }
+
+export interface IExecutionTrace {
+    runId: string;
+    nodeId: string;
+    nodeType: string;
+    input: any;
+    output: any;
+    config: Record<string, any>;
+    status: string;
+    startedAt: string;
+    completedAt?: string | null;
+    error?: string | null;
+}

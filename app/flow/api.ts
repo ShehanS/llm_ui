@@ -1,6 +1,7 @@
-import {IResponseMessage, IWorkflow} from "../data/data";
+import { IExecutionTrace, IResponseMessage, IWorkflow } from "../data/data";
 
 const API_BASE = "http://localhost:8080/service/api/workflow";
+const WS_BASE = "ws://localhost:8080/service/api/workflow/ws/trace";
 
 export async function saveWorkflow(workflow: IWorkflow): Promise<any> {
     const res = await fetch(`${API_BASE}/save`, {
@@ -13,27 +14,19 @@ export async function saveWorkflow(workflow: IWorkflow): Promise<any> {
     });
 
     if (!res.ok) {
-        const err = await res.text();
-        throw new Error(`Failed to save workflow: ${err}`);
+        throw new Error(await res.text());
     }
 
-    const json = await res.json();
-    return json;
+    return res.json();
 }
-
 
 export async function openWorkflow(id: string): Promise<IWorkflow> {
     const res = await fetch(`${API_BASE}/open/${id}`, {
-        method: "GET",
         cache: "no-store",
-        headers: {
-            "Content-Type": "application/json",
-        }
     });
 
     if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err);
+        throw new Error(await res.text());
     }
 
     const json: IResponseMessage<IWorkflow> = await res.json();
@@ -42,19 +35,46 @@ export async function openWorkflow(id: string): Promise<IWorkflow> {
 
 export async function openWorkflows(): Promise<IWorkflow[]> {
     const res = await fetch(`${API_BASE}/open/all`, {
-        method: "GET",
         cache: "no-store",
-        headers: {
-            "Content-Type": "application/json",
-        }
     });
 
     if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err);
+        throw new Error(await res.text());
     }
 
     const json: IResponseMessage<IWorkflow[]> = await res.json();
     return json.data;
 }
 
+export function openWorkflowTraceWS(
+    runId: string,
+    onMessage: (trace: IExecutionTrace) => void,
+    onError?: (event: Event) => void,
+    onClose?: (event: CloseEvent) => void
+) {
+    const ws = new WebSocket(`${WS_BASE}/${runId}`);
+
+    ws.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data);
+            // Ensure we only process actual trace objects
+            if (data && data.nodeId) {
+                onMessage(data);
+            }
+        } catch (e) {
+            console.error("Failed to parse WS message", e);
+        }
+    };
+
+    ws.onerror = (event) => onError?.(event);
+    ws.onclose = (event) => onClose?.(event);
+
+    return {
+        socket: ws,
+        close: () => {
+            if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+                ws.close();
+            }
+        }
+    };
+}
