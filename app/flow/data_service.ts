@@ -1,35 +1,54 @@
-import {create} from "zustand";
-import {openWorkflow, openWorkflows, saveWorkflow as saveWorkflowApi} from "@/app/flow/api";
-import {IWorkflow} from "@/app/data/data";
+import { create } from "zustand";
+import {
+    openWorkflow,
+    openWorkflows,
+    saveWorkflow,
+    openWorkflowTraceWS
+} from "@/app/flow/api";
+import { IExecutionTrace, IWorkflow } from "@/app/data/data";
 
 interface WorkflowStore {
     loading: boolean;
     error: any | null;
-    savedWorkflow: any | null;
-    openWorkflow: (id: string) => Promise<void>;
-    saveWorkflow: (workflow: IWorkflow) => Promise<void>;
-    openWorkflows: () => Promise<void>;
+
+    workflow: IWorkflow | null;
     workflows: IWorkflow[];
-    clear: () => Promise<void>;
+    savedWorkflow: any | null;
+
+    traces: IExecutionTrace;
+    traceConnected: boolean;
+
+    saveWorkflow: (workflow: IWorkflow) => Promise<void>;
+    openWorkflow: (id: string) => Promise<void>;
+    openWorkflows: () => Promise<void>;
+
+    startLiveTrace: (runId: string) => void;
+    stopLiveTrace: () => void;
+
+    clear: () => void;
 }
 
+let closeTrace: (() => void) | null = null;
+let traceController: { close: () => void } | null = null;
 export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
     loading: false,
     error: null,
+
     workflow: null,
     workflows: [],
+    savedWorkflow: null,
+
+    traces: null,
+    traceConnected: false,
 
     saveWorkflow: async (workflow) => {
         if (get().loading) return;
 
-        set({loading: true, error: null});
+        set({ loading: true, error: null });
 
         try {
-            const data = await saveWorkflowApi(workflow);
-            set({
-                savedWorkflow: data,
-                loading: false,
-            });
+            const data = await saveWorkflow(workflow);
+            set({ savedWorkflow: data, loading: false });
         } catch (e: any) {
             set({
                 loading: false,
@@ -38,17 +57,14 @@ export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
         }
     },
 
-    openWorkflow: async (id: string) => {
+    openWorkflow: async (id) => {
         if (get().loading) return;
 
-        set({loading: true, error: null});
+        set({ loading: true, error: null });
 
         try {
             const data = await openWorkflow(id);
-            set({
-                workflow: data,
-                loading: false,
-            });
+            set({ workflow: data, loading: false });
         } catch (e: any) {
             set({
                 loading: false,
@@ -60,24 +76,53 @@ export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
     openWorkflows: async () => {
         if (get().loading) return;
 
-        set({loading: true, error: null});
+        set({ loading: true, error: null });
 
         try {
             const data = await openWorkflows();
-            set({
-                workflows: data,
-                loading: false,
-            });
+            set({ workflows: data, loading: false });
         } catch (e: any) {
             set({
                 loading: false,
-                error: e?.message ?? "Failed to open workflow",
+                error: e?.message ?? "Failed to open workflows",
             });
         }
     },
 
-    clear: () => {
-        set({loading: false, error: null, savedWorkflow: null});
-    }
+    startLiveTrace: (runId: string) => {
+        if (traceController) {
+            traceController.close();
+            traceController = null;
+        }
 
+        set({ traces: null, traceConnected: false });
+
+        traceController = openWorkflowTraceWS(
+            runId,
+            (trace: IExecutionTrace) => {
+                set((state) => ({
+                    traces: trace,
+                    traceConnected: true
+                }));
+            },
+            () => set({ traceConnected: false }),
+            () => set({ traceConnected: false })
+        );
+    },
+
+    stopLiveTrace: () => {
+        if (traceController) {
+            traceController.close();
+            traceController = null;
+        }
+        set({ traceConnected: false });
+    },
+
+    clear: () => {
+        if (traceController) {
+            traceController.close();
+            traceController = null;
+        }
+        set({ traces: null, traceConnected: false, workflow: null });
+    }
 }));
