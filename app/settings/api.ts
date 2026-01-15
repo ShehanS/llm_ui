@@ -22,7 +22,7 @@ export async function uploadPlugin(file: File): Promise<ITool> {
 
 export async function fetchPlugins(): Promise<ITool[]> {
     const res = await fetch(`${API_BASE}/tool/all`, {
-        cache: "no-store", // realtime
+        cache: "no-store",
     });
 
     if (!res.ok) {

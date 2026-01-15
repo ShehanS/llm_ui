@@ -1,31 +1,43 @@
 export interface ITool {
     id: number | null;
-    pId: string;
-    name: string;
-    description: string;
-    fileName: string;
-    path: string;
-    agents: string[];
+    name: string;           // Name used by LLM to call tool
+    description: string;    // Description for LLM instruction
+    type: "script" | "api"; // Logic type
+    code?: string;          // JavaScript for VM2 (if type is script)
+    url?: string;           // Endpoint (if type is api)
+    toolSchema: string;     // Stringified JSON Schema for parameters
     status: string;
 }
 
 export interface IAgent {
     id: number | null;
     agentName: string;
+    displayName: string | null;
     description: string;
     expertise: string;
     isDefault: boolean;
     model: IModelConfig;
     systemPrompt: string;
-    tools: string[];
-    displayName: string | null;
+    tools: ITool[];         // Updated: Now returns full Tool objects
 }
 
 export interface IModelConfig {
     provider: string;
     name: string;
     temperature: number;
-    apiKey: string;
+    apiKey?: string | null;
+}
+
+
+export interface IRoutingConfig {
+    classifierModel: IModelConfig;
+    routingPrompt: string;
+    fallbackAgent: string;
+}
+
+export interface IMainConfig {
+    agents: IAgent[];
+    routing: IRoutingConfig;
 }
 
 export interface IResponseMessage<T> {
@@ -47,10 +59,8 @@ export interface INode {
 export interface IEdge {
     source: string | null;
     target: string | null;
-    sourceHandle: string | null
-
+    sourceHandle: string | null;
 }
-
 
 export interface IPosition {
     x: number | null;
