@@ -125,13 +125,53 @@ const Page: FC = () => {
     );
 
     const updateNodeConfig = (propName: any, value: any) => {
-        setNodes((nds) => nds.map((node) => node.id !== selectedNodeId ? node : {
-            ...node,
-            data: {
-                ...node.data,
-                inputProps: node.data.inputProps.map((p: any) => p.name === propName ? {...p, value} : p),
-            },
-        }));
+
+        // setNodes((nds) => nds.map((node) => node.id !== selectedNodeId ? node : {
+        //     ...node,
+        //     data: {
+        //         ...node.data,
+        //         inputProps: node.data.inputProps.map((p: any) => p.name === propName ? {...p, value} : p),
+        //     },
+        // }));
+        setNodes((nds) =>
+            nds.map((node) =>
+                node.id !== selectedNodeId
+                    ? node
+                    : {
+                        ...node,
+                        data: {
+                            ...node.data,
+                            inputProps: node.data.inputProps.map((p: any) => {
+                                const isMapper =
+                                    typeof propName === "object" &&
+                                    propName?.name === "inputMapper" || propName?.name === "outputMapper" &&
+                                    propName?.name === "inputMapper" || propName?.name === "outputMapper";
+
+                                if (isMapper) {
+                                    return {
+                                        ...p,
+                                        value: {
+                                            ...(typeof p.value === "object" &&
+                                            !Array.isArray(p.value)
+                                                ? p.value
+                                                : {}),
+                                            [propName.type]: value,
+                                        },
+                                    };
+                                }
+                                if (p.name === propName) {
+                                    return {
+                                        ...p,
+                                        value,
+                                    };
+                                }
+
+                                return p;
+                            }),
+                        },
+                    }
+            )
+        );
     };
 
     useEffect(() => {
@@ -161,7 +201,7 @@ const Page: FC = () => {
                     <Spinner/></div>}
 
             <CommonDialog open={!!error} title="Error" message={String(error)} type="error" onClose={clear}/>
-            <CommonDialog open={!!savedWorkflow} title="Success" message="Workflow saved!" type="info" onClose={clear}/>
+            {/*<CommonDialog open={!!savedWorkflow} title="Success" message="Workflow saved!" type="info" onClose={clear}/>*/}
             <OpenWorkflowDialog open={openDialog} onClose={() => setOpenDialog(false)} files={workflows}
                                 onOpenFile={(id) => {
                                     openWorkflow(id);
