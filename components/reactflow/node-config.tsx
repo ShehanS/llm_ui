@@ -5,6 +5,7 @@ import {ObjectMapper} from "@/components/reactflow/object-mapper";
 import {ChevronDown, ChevronLeft, ChevronRight, Info, Settings2, SlidersHorizontal} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {AgentConfig} from "@/components/reactflow/agent-config/agent-config";
+import RouteAgentSelector from "@/app/components/route-agent-selector";
 
 type Props = {
     node: any;
@@ -18,7 +19,6 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
 
     return (
         <>
-            {/* COLLAPSE/EXPAND HANDLE */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
@@ -37,7 +37,7 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
                     isOpen ? "w-[450px] translate-x-0" : "w-0 translate-x-full"
                 )}
             >
-                {/* HEADER */}
+
                 <div
                     className="flex h-16 items-center gap-3 border-b border-slate-800 px-6 shrink-0 bg-slate-950/50 backdrop-blur-sm">
                     <Settings2 size={18} className="text-emerald-500"/>
@@ -53,7 +53,6 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
                     </div>
                 </div>
 
-                {/* SCROLLABLE CONTENT */}
                 <div
                     className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent custom-scrollbar">
                     {!node ? (
@@ -121,13 +120,13 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
                                             </div>
                                         );
 
-                                    case "agentConfig":
+                                    case "routeAgent":
                                         return (
                                             <div key={prop.name} className="space-y-2">
                                                 <label
                                                     className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
                                                 <div className="relative">
-                                                    <AgentConfig/>
+                                                    <RouteAgentSelector onChange={onChange} value={prop}/>
                                                 </div>
 
                                             </div>

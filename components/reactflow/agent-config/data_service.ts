@@ -11,11 +11,12 @@ interface ConfigStore {
     routingConfigs: IRoutingConfig[];
     currentRouteName: string;
 
-    fetchInitialData: (routeName: string) => Promise<void>;
+    fetchInitialData: (routeName?: string) => Promise<void>;
     fetchRoutingConfig: (routeName: string) => Promise<void>;
     updateRoutingConfig: (config: Partial<IRoutingConfig>) => Promise<void>;
     createNewRouting: (config: any) => Promise<void>;
     deleteRoutingConfig: (id: number) => Promise<void>;
+    fetchRoutingConfigs: () => Promise<void>;
 
     createNewAgent: (agent: any) => Promise<void>;
     updateAgent: (agent: any) => Promise<void>;
@@ -59,17 +60,27 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
                 loading: false
             });
         } catch (e: any) {
-            set({ error: e.message || "Failed to load data", loading: false });
+            set({error: e.message || "Failed to load data", loading: false});
+        }
+    },
+
+    fetchRoutingConfigs: async () => {
+        set({loading: true});
+        try {
+            const routingConfigs = await api.getRoutingConfigs();
+            set({routingConfigs: routingConfigs, loading: false});
+        } catch (e: any) {
+            set({error: e.message, loading: false});
         }
     },
 
     fetchRoutingConfig: async (routeName: string) => {
-        set({ loading: true, currentRouteName: routeName });
+        set({loading: true, currentRouteName: routeName});
         try {
             const routingConfig = await api.getRoutingConfig(routeName);
-            set({ routingConfig: routingConfig, loading: false });
+            set({routingConfig: routingConfig, loading: false});
         } catch (e: any) {
-            set({ error: e.message, loading: false });
+            set({error: e.message, loading: false});
         }
     },
 

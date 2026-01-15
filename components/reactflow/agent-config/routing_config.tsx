@@ -169,7 +169,7 @@ const RoutingTab = () => {
                         </div>
                     </div>
 
-                    {/* Assigned Agents Management - NEW SECTION */}
+                    {/* Assigned RouteAgentSelector Management - NEW SECTION */}
                     {!isAdding && routingConfig && (
                         <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-xl space-y-4">
                             <div className="flex justify-between items-center">

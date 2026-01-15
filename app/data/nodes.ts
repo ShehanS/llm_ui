@@ -146,7 +146,16 @@ export const NODE_CATALOG = {
         "config": {
             "icon": "",
             "inputProps": [
+                {
+                    "type": "routeAgent",
+                    "name": "routeAgent",
+                    "displayName": "Route Agent",
+                    "defaultValue": "",
+                    "value": "",
+                    "required": false,
 
+
+                },
                 {
                     "type": "text",
                     "values": [],
