@@ -18,18 +18,20 @@ export interface IAgent {
     isDefault: boolean;
     model: IModelConfig;
     systemPrompt: string;
-    tools: ITool[];         // Updated: Now returns full Tool objects
+    tools: ITool[];
 }
 
 export interface IModelConfig {
-    provider: string;
-    name: string;
-    temperature: number;
+    id: number | null;
+    provider: string | null;
+    name: string | null;
+    temperature: number | null;
     apiKey?: string | null;
 }
 
 
 export interface IRoutingConfig {
+    id: number;
     classifierModel: IModelConfig;
     routingPrompt: string;
     fallbackAgent: string;

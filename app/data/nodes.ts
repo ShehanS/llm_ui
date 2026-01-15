@@ -173,17 +173,7 @@ export const NODE_CATALOG = {
                     "required": false,
 
 
-                },
-                {
-                    "type": "agentConfig",
-                    "values": [],
-                    "name": "agentConfig",
-                    "defaultValue": "",
-                    "value": "",
-                    "displayName": "Agent Intelligence",
-                    "required": true
-
-                },
+                }
             ]
         },
         "inputs": [
