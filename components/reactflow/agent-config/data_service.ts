@@ -27,6 +27,10 @@ interface ConfigStore {
 
     assignTool: (agentId: number, toolId: number) => Promise<void>;
     unlinkTool: (agentId: number, toolId: number) => Promise<void>;
+
+    assignAgentToRoute: (routeId: number, agentId: number) => Promise<void>;
+    removeAgentFromRoute: (routeId: number, agentId: number) => Promise<void>;
+
     pushToAI: () => Promise<void>;
 }
 
@@ -42,7 +46,7 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
     fetchInitialData: async (routeName: string) => {
         set({ loading: true, error: null, currentRouteName: routeName });
         try {
-            const [agents, tools, routingConfigs, activeRouting] = await Promise.all([
+            const [agents, tools, routingConfigs] = await Promise.all([
                 api.getAllAgents(),
                 api.getAllTools(),
                 api.getRoutingConfigs(),
@@ -159,6 +163,28 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
         try {
             await api.unlinkToolFromAgent(agentId, toolId);
             await get().fetchInitialData(get().currentRouteName);
+        } catch (e: any) { set({ error: e.message, loading: false }); }
+    },
+
+    assignAgentToRoute: async (routeId, agentId) => {
+        set({ loading: true });
+        try {
+            await api.linkAgentToRoute(routeId, agentId);
+            if (get().routingConfig?.id === routeId) {
+                await get().fetchRoutingConfig(get().currentRouteName);
+            }
+            set({ loading: false });
+        } catch (e: any) { set({ error: e.message, loading: false }); }
+    },
+
+    removeAgentFromRoute: async (routeId, agentId) => {
+        set({ loading: true });
+        try {
+            await api.unlinkAgentFromRoute(routeId, agentId);
+            if (get().routingConfig?.id === routeId) {
+                await get().fetchRoutingConfig(get().currentRouteName);
+            }
+            set({ loading: false });
         } catch (e: any) { set({ error: e.message, loading: false }); }
     },
 

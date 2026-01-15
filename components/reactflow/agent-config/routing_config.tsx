@@ -63,7 +63,8 @@ export const OrchestratorManager = () => {
 const RoutingTab = () => {
     const {
         routingConfigs, routingConfig, agents, loading,
-        fetchRoutingConfig, updateRoutingConfig, createNewRouting, deleteRoutingConfig
+        fetchRoutingConfig, updateRoutingConfig, createNewRouting, deleteRoutingConfig,
+        assignAgentToRoute, removeAgentFromRoute // New actions from store
     } = useConfigStore();
 
     const [isAdding, setIsAdding] = useState(false);
@@ -133,8 +134,10 @@ const RoutingTab = () => {
                     ))}
                 </div>
             </div>
+
             <div className="col-span-8 p-8 overflow-y-auto bg-slate-950">
                 <div className="max-w-2xl space-y-6">
+                    {/* Route Basic Info */}
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-500 uppercase">Route Name</label>
                         <input
@@ -142,6 +145,8 @@ const RoutingTab = () => {
                             value={form.routeName} disabled={!isAdding}
                             onChange={(e) => setForm({...form, routeName: e.target.value})}/>
                     </div>
+
+
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-slate-500 uppercase">Provider</label>
@@ -163,16 +168,45 @@ const RoutingTab = () => {
                             })}/>
                         </div>
                     </div>
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1"><Key
-                            size={10}/> API Key</label>
-                        <input type="password" placeholder="sk-..."
-                               className="w-full bg-slate-900 border border-slate-800 rounded-md p-2.5 text-xs text-white"
-                               value={form.classifierModel.apiKey} onChange={(e) => setForm({
-                            ...form,
-                            classifierModel: {...form.classifierModel, apiKey: e.target.value}
-                        })}/>
-                    </div>
+
+                    {/* Assigned Agents Management - NEW SECTION */}
+                    {!isAdding && routingConfig && (
+                        <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-xl space-y-4">
+                            <div className="flex justify-between items-center">
+                                <label className="text-[10px] font-bold text-blue-400 uppercase tracking-widest flex items-center gap-2">
+                                    <User size={12}/> Allowed Agent Fleet
+                                </label>
+                            </div>
+
+                            <div className="flex flex-wrap gap-2 min-h-[40px] items-center">
+                                {routingConfig.agents?.map((agent: any) => (
+                                    <span key={agent.id} className="flex items-center gap-2 px-3 py-1.5 bg-blue-600/10 text-[10px] font-bold text-blue-400 border border-blue-500/30 rounded-lg group">
+                                        {agent.displayName}
+                                        <button
+                                            onClick={() => removeAgentFromRoute(routingConfig.id!, agent.id)}
+                                            className="hover:text-red-500 transition-colors"
+                                        >
+                                            <X size={12}/>
+                                        </button>
+                                    </span>
+                                ))}
+
+                                <BaseSelect
+                                    className="w-44 py-1.5 text-[10px] bg-slate-800 border-dashed border-slate-700"
+                                    value=""
+                                    onChange={(e) => assignAgentToRoute(routingConfig.id!, Number(e.target.value))}
+                                >
+                                    <option value="">+ Link Agent to Fleet</option>
+                                    {agents
+                                        .filter(a => !routingConfig.agents?.some((ra: any) => ra.id === a.id))
+                                        .map(a => <option key={a.id} value={a.id}>{a.displayName}</option>)
+                                    }
+                                </BaseSelect>
+                            </div>
+                            <p className="text-[9px] text-slate-500 italic font-medium">Only the agents listed above will be available to the classifier for this route.</p>
+                        </div>
+                    )}
+
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-500 uppercase">Fallback Agent</label>
                         <BaseSelect value={form.fallbackAgent}
@@ -181,13 +215,15 @@ const RoutingTab = () => {
                             {agents.map(a => <option key={a.id} value={a.agentName}>{a.displayName}</option>)}
                         </BaseSelect>
                     </div>
+
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase">System Prompt</label>
+                        <label className="text-[10px] font-bold text-slate-500 uppercase">Routing Instructions (System Prompt)</label>
                         <textarea rows={8}
                                   className="w-full bg-black/40 border border-slate-800 rounded-md p-4 text-xs font-mono text-slate-300"
                                   value={form.routingPrompt}
                                   onChange={(e) => setForm({...form, routingPrompt: e.target.value})}/>
                     </div>
+
                     <button onClick={handleSave} disabled={loading}
                             className="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-md font-bold text-xs flex items-center justify-center gap-2 shadow-xl shadow-blue-900/20">{loading ?
                         <Sparkles size={14} className="animate-pulse"/> :
@@ -274,7 +310,7 @@ const AgentsTab = () => {
                                 ))}
                                 <div className="relative">
                                     <BaseSelect
-                                        className="w-36 py-1 text-[10px] bg-transparent border-dashed border-slate-700"
+                                        className="w-36 py-1 text-[10px] border-dashed border-slate-700"
                                         value=""
                                         onChange={(e) => assignTool(agent.id!, Number(e.target.value))}
                                     >

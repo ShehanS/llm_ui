@@ -2,14 +2,12 @@ import {IAgent, IMainConfig, IResponseMessage, IRoutingConfig, ITool} from "@/ap
 
 const API_BASE = "http://localhost:8080/service/api/config";
 
-
 export async function getFullConfigByRouteName(routeName: string): Promise<IMainConfig> {
     const res = await fetch(`${API_BASE}/full/${routeName}`, {cache: "no-store"});
     if (!res.ok) throw new Error(await res.text());
     const json: IResponseMessage<IMainConfig> = await res.json();
     return json.data;
 }
-
 
 export async function getRoutingConfigs(): Promise<IRoutingConfig[]> {
     const res = await fetch(`${API_BASE}/routing-config/all`, {cache: "no-store"});
@@ -27,9 +25,7 @@ export async function getRoutingConfig(routeName: string): Promise<IRoutingConfi
 
 export async function saveRoutingConfig(config: Partial<IRoutingConfig>): Promise<IRoutingConfig> {
     const method = config.id ? "PUT" : "POST";
-    const endpoint = config.id ? `${API_BASE}/routing-config` : `${API_BASE}/routing-config`;
-
-    const res = await fetch(endpoint, {
+    const res = await fetch(`${API_BASE}/routing-config`, {
         method: method,
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(config),
@@ -45,7 +41,6 @@ export async function deleteRoutingConfig(id: number): Promise<void> {
     });
     if (!res.ok) throw new Error("Failed to delete routing configuration");
 }
-
 
 export async function getAllAgents(): Promise<IAgent[]> {
     const res = await fetch(`${API_BASE}/agents`, {cache: "no-store"});
@@ -83,8 +78,6 @@ export async function deleteAgent(id: number): Promise<void> {
     if (!res.ok) throw new Error("Failed to delete agent");
 }
 
-
-
 export async function getAllTools(): Promise<ITool[]> {
     const res = await fetch(`${API_BASE}/tools`, {cache: "no-store"});
     if (!res.ok) throw new Error(await res.text());
@@ -121,7 +114,6 @@ export async function deleteTool(id: number): Promise<void> {
     if (!res.ok) throw new Error("Failed to delete tool");
 }
 
-
 export async function linkToolToAgent(agentId: number, toolId: number): Promise<void> {
     const res = await fetch(`${API_BASE}/link/${agentId}/${toolId}`, {
         method: "POST"
@@ -136,6 +128,19 @@ export async function unlinkToolFromAgent(agentId: number, toolId: number): Prom
     if (!res.ok) throw new Error("Unlinking failed");
 }
 
+export async function linkAgentToRoute(routeId: number, agentId: number): Promise<void> {
+    const res = await fetch(`${API_BASE}/routing-config/${routeId}/link-agent/${agentId}`, {
+        method: "POST"
+    });
+    if (!res.ok) throw new Error("Agent linking failed");
+}
+
+export async function unlinkAgentFromRoute(routeId: number, agentId: number): Promise<void> {
+    const res = await fetch(`${API_BASE}/routing-config/${routeId}/unlink-agent/${agentId}`, {
+        method: "DELETE"
+    });
+    if (!res.ok) throw new Error("Agent unlinking failed");
+}
 
 export async function reloadAIService(): Promise<any> {
     const res = await fetch(`http://localhost:8500/api/v1/reload`, {

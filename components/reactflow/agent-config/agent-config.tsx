@@ -17,8 +17,6 @@ export const AgentConfig = () => {
     const [selectedAgentId, setSelectedAgentId] = useState<number | "">("");
 
     const handleSelectAgent = (id: number) => {
-        console.log(id)
-        console.log(agents)
         setSelectedAgentId(id);
     }
 
@@ -94,7 +92,7 @@ export const AgentConfig = () => {
                         </BaseSelect>
                     </div>
 
-                    {/* ASSIGNED TOOLS LIST */}
+
                     <div className="space-y-1">
                         <label className="text-[9px] font-bold uppercase text-slate-600 ml-1 mb-1 block">
                             Active Skills
