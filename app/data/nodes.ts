@@ -163,7 +163,6 @@ export const NODE_CATALOG = {
                     "defaultValue": "",
                     "value": "",
                     "required": false,
-                    "placeholder": ""
                 },
                 {
                     "type": "mapper",
@@ -172,9 +171,19 @@ export const NODE_CATALOG = {
                     "defaultValue": "",
                     "value": "",
                     "required": false,
-                    "placeholder": ""
 
-                }
+
+                },
+                {
+                    "type": "agentConfig",
+                    "values": [],
+                    "name": "agentConfig",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Agent Intelligence",
+                    "required": true
+
+                },
             ]
         },
         "inputs": [

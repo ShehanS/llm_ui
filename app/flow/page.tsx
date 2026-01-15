@@ -169,7 +169,38 @@ const Page: FC = () => {
                                 }}/>
             <SaveWorkflowDialog open={saveDialog} fileName={workflow?.flowName ?? ""}
                                 description={workflow?.description ?? ""} onClose={() => setSaveDialog(false)}
-                                onSave={() => {
+                                onSave={async (fileName, description) => {
+
+                                    const wfDef = {
+                                        nodes: nodes.map((n) => ({
+                                            id: n.id,
+                                            type: n.data.type,
+                                            label: n.data.label,
+                                            color: n.data.color,
+                                            position: n.position,
+                                            config: {
+                                                icon: n.data.config?.icon ?? "",
+                                                inputProps: n.data.inputProps ?? [],
+                                            },
+                                            inputs: n.data.inputs ?? [],
+                                            outputs: n.data.outputs ?? [],
+                                        })),
+                                        edges: edges.map((e) => ({
+                                            source: e.source,
+                                            target: e.target,
+                                            sourceHandle: e.sourceHandle || "default",
+                                        })),
+                                    };
+
+                                    const payload = {
+                                        flowId: workflow?.flowId || getId(),
+                                        flowName: fileName,
+                                        description: description,
+                                        definition: wfDef,
+                                        state: true
+                                    };
+                                    await saveWorkflow(payload);
+                                    setSaveDialog(false);
                                 }}/>
             <NodeSideBar isOpen={leftOpen} setIsOpen={setLeftOpen}/>
             <div

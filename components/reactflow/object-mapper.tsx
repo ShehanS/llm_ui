@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { Plus, Trash2, Code, Database, Layers } from "lucide-react";
+import {BaseSelect} from "@/app/components/base-select";
+
 
 type MapperItem = {
     key: string;
@@ -20,10 +22,7 @@ type ObjectMapperProps = {
     onChange: (name: string, value: any) => void;
 };
 
-export const ObjectMapper: React.FC<ObjectMapperProps> = ({
-                                                              value,
-                                                              onChange,
-                                                          }) => {
+export const ObjectMapper: React.FC<ObjectMapperProps> = ({ value, onChange }) => {
     const name = value?.name;
 
     const detectMode = () => {
@@ -39,7 +38,7 @@ export const ObjectMapper: React.FC<ObjectMapperProps> = ({
 
     useEffect(() => {
         if (!value?.value) return;
-        setPayloadSource(value.value.payloadSource ?? "body");
+        setPayloadSource(value.value.payloadSource ?? "");
         setPayloadExpression(value.value.payloadExpression ?? "");
         setMapper(structuredClone(value.value.map ?? []));
         setMode(detectMode());
@@ -80,51 +79,60 @@ export const ObjectMapper: React.FC<ObjectMapperProps> = ({
         emit({ map: next });
     };
 
+    const getModeIcon = () => {
+        if (mode === "payloadSource") return <Database size={14} />;
+        if (mode === "payloadExpression") return <Code size={14} />;
+        return <Layers size={14} />;
+    };
+
     return (
         <div className="space-y-4 w-full">
-            {/* MODE SELECT */}
             <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">
                     Mapping Mode
                 </label>
-                <div className="relative">
-                    <select
-                        className="w-full appearance-none rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all cursor-pointer"
-                        value={mode}
-                        onChange={(e) => changeMode(e.target.value as any)}
-                    >
-                        <option value="payloadSource">Direct Source</option>
-                        <option value="payloadExpression">JS Expression</option>
-                        <option value="mapper">Key-Value Mapper</option>
-                    </select>
-                    <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
-                        {mode === "payloadSource" && <Database size={14} />}
-                        {mode === "payloadExpression" && <Code size={14} />}
-                        {mode === "mapper" && <Layers size={14} />}
-                    </div>
-                </div>
+                <BaseSelect
+                    value={mode}
+                    onChange={(e) => changeMode(e.target.value as any)}
+                    rightIcon={getModeIcon()}
+                >
+                    <option value="" disabled>
+                        Select Mode...
+                    </option>
+                    <option value="payloadSource">Direct Source</option>
+                    <option value="mapper">Key-Value Mapper</option>
+                </BaseSelect>
             </div>
+
             {mode === "payloadSource" && (
                 <div className="space-y-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">Source Target</label>
-                    <select
-                        className="w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50"
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">
+                        Source Target
+                    </label>
+                    <BaseSelect
                         value={payloadSource}
                         onChange={(e) => {
-                            setPayloadSource(e.target.value);
-                            emit({ payloadSource: e.target.value });
+                            const val = e.target.value;
+                            setPayloadSource(val);
+                            emit({ payloadSource: val });
                         }}
                     >
+                        <option value="" disabled>
+                            Select Source...
+                        </option>
                         <option value="body">Request Body</option>
                         <option value="headers">Request Headers</option>
                         <option value="query">Query Parameters</option>
                         <option value="all">Full Payload</option>
-                    </select>
+                    </BaseSelect>
                 </div>
             )}
+
             {mode === "payloadExpression" && (
                 <div className="space-y-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">Expression</label>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">
+                        Expression
+                    </label>
                     <textarea
                         rows={3}
                         placeholder="{{body.data.id}}"
@@ -141,12 +149,13 @@ export const ObjectMapper: React.FC<ObjectMapperProps> = ({
             {/* OBJECT MAPPER UI */}
             {mode === "mapper" && (
                 <div className="space-y-4 animate-in fade-in duration-200">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">Field Mappings</label>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">
+                        Field Mappings
+                    </label>
 
                     <div className="space-y-4">
                         {mapper.map((item, index) => (
                             <div key={index} className="relative p-3 rounded-lg border border-slate-800 bg-slate-900/30 space-y-3">
-                                {/* Remove Button - Now Top Right and Always Visible */}
                                 <button
                                     type="button"
                                     onClick={() => removeMapper(index)}
