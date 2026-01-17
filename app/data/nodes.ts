@@ -303,10 +303,19 @@ export const NODE_CATALOG = {
                 {
                     "type": "text",
                     "values": [],
-                    "name": "webhookUrl",
+                    "name": "outboundWebhookUrl",
                     "defaultValue": "",
                     "value": "",
-                    "displayName": "Webhook URL",
+                    "displayName": "Outbound Webhook",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "inboundWebhookUrl",
+                    "defaultValue": "",
+                    "value": "http://localhost:8080/service/webhook/{runId}/{sourceHandler}",
+                    "displayName": "Inbound Webhook",
                     "required": true
                 },
                 {
