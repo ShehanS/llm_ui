@@ -124,7 +124,7 @@ const CommonNode: React.FC<any> = ({ id, data, selected }) => {
             {traceConnected && latestTrace && (
                 <div className={cn(
                     "absolute -top-6 left-0 px-2 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider text-white shadow-lg",
-                    nodeStatus === "ERROR" ? "bg-red-600" : "bg-indigo-600"
+                    nodeStatus === "FAILED" ? "bg-red-600" : nodeStatus === "WAITING" ? "bg-green-600" : "bg-indigo-600"
                 )}>
                     {nodeStatus}
                 </div>
