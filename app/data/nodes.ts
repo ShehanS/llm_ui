@@ -153,8 +153,6 @@ export const NODE_CATALOG = {
                     "defaultValue": "",
                     "value": "",
                     "required": false,
-
-
                 },
                 {
                     "type": "text",
@@ -172,16 +170,6 @@ export const NODE_CATALOG = {
                     "defaultValue": "",
                     "value": "",
                     "required": false,
-                },
-                {
-                    "type": "mapper",
-                    "name": "outputMapper",
-                    "displayName": "Output Mapper",
-                    "defaultValue": "",
-                    "value": "",
-                    "required": false,
-
-
                 }
             ]
         },
@@ -189,7 +177,9 @@ export const NODE_CATALOG = {
             {"id": "default", "label": "Input", "position": "left"}
         ],
         "outputs": [
-            {"id": "default", "label": "Default", "position": "right"}
+            {"id": "success", "label": "Default", "position": "right"},
+            {"id": "error", "label": "Error", "position": "right"}
+
         ]
     },
     "trigger.whatsapp": {
@@ -299,8 +289,43 @@ export const NODE_CATALOG = {
             ]
         },
         "inputs": [
-            { "id": "in-default", "label": "Input", "position": "left" }
+            {"id": "in-default", "label": "Input", "position": "left"}
         ],
         "outputs": []
+    },
+    "human.approval": {
+        "type": "human.approval",
+        "label": "Human Approval",
+        "color": "#059fb4",
+        "config": {
+            "icon": "",
+            "inputProps": [
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "webhookUrl",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Webhook URL",
+                    "required": true
+                },
+                {
+                    "type": "mapper",
+                    "name": "inputMapper",
+                    "displayName": "Input Mapper",
+                    "defaultValue": "",
+                    "value": "",
+                    "required": false,
+                },
+            ]
+        },
+        "inputs": [
+            {"id": "default", "label": "Input", "position": "left"}
+        ],
+        "outputs": [
+            {"id": "success", "label": "Default", "position": "right"},
+            {"id": "error", "label": "Error", "position": "right"}
+
+        ]
     }
 };

@@ -87,11 +87,20 @@ export interface IExecutionTrace {
     runId: string;
     nodeId: string;
     nodeType: string;
-    input: any;
-    output: any;
+    input: {
+        items?: Array<{
+            data: Record<string, any>;
+        }>;
+    } | null;
+    output: {
+        items?: Array<{
+            data: Record<string, any>;
+        }>;
+    } | null;
     config: Record<string, any>;
-    status: string;
+    status: 'RUNNING' | 'COMPLETE' | 'FAILED' | 'WAITING';
     startedAt: string;
     completedAt?: string | null;
     error?: string | null;
+    metadata?: any;
 }

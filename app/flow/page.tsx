@@ -66,7 +66,7 @@ const Page: FC = () => {
         };
 
         window.addEventListener("resize", handleViewUpdate);
-        const timeout = setTimeout(handleViewUpdate, 350);
+        const timeout = setTimeout(handleViewUpdate, 10000);
 
         return () => {
             window.removeEventListener("resize", handleViewUpdate);
@@ -294,47 +294,95 @@ const Page: FC = () => {
                 {debugDetails && traceConnected && (
                     <div className={cn(
                         "absolute bottom-4 left-4 right-4 bg-slate-950 border border-slate-800 rounded-xl z-[60] transition-all duration-300 shadow-2xl overflow-hidden flex flex-col",
-                        isPanelExpanded ? 'h-[40vh]' : 'h-10'
+                        isPanelExpanded ? 'h-[70vh]' : 'h-10'
                     )}>
                         <div
-                            className="flex items-center justify-between px-4 h-10 bg-slate-900 border-b border-slate-800 cursor-pointer"
+                            className="flex items-center justify-between px-4 h-10 bg-slate-900 border-b border-slate-800 cursor-pointer shrink-0"
                             onClick={() => setIsPanelExpanded(!isPanelExpanded)}>
                             <div className="flex items-center gap-2">
-                                <Terminal size={14} className="text-emerald-400"/>
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-200">Debug Console</span>
+                                <Terminal size={14} className={cn(
+                                    debugDetails.status === 'FAILED' ? "text-red-400" :
+                                        debugDetails.status === 'WAITING' ? "text-indigo-400" : "text-emerald-400"
+                                )}/>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-200">
+                    Debug Console: {debugDetails.nodeType} ({debugDetails.status})
+                </span>
                             </div>
                             <div className="flex items-center gap-4">
-                                <button className="text-slate-400 hover:text-white">{isPanelExpanded ?
-                                    <ChevronDown size={18}/> : <ChevronUp size={18}/>}</button>
-                                <button onClick={(e) => {
-                                    e.stopPropagation();
-                                    setDebugDetails(null);
-                                }} className="text-slate-400 hover:text-red-400"><X size={18}/></button>
+                                <button className="text-slate-400 hover:text-white">
+                                    {isPanelExpanded ? <ChevronDown size={18}/> : <ChevronUp size={18}/>}
+                                </button>
+                                <button onClick={(e) => { e.stopPropagation(); setDebugDetails(null); }}
+                                        className="text-slate-400 hover:text-red-400">
+                                    <X size={18}/>
+                                </button>
                             </div>
                         </div>
+
                         {isPanelExpanded && (
-                            <div className="p-4 flex-1 grid grid-cols-2 gap-4 overflow-hidden bg-slate-950">
-                                <div className="flex flex-col h-full overflow-hidden">
-                                    <span
-                                        className="text-[10px] text-blue-400 font-bold uppercase mb-2 ml-1">Input Data</span>
-                                    <pre
-                                        className="flex-1 bg-black/40 p-3 rounded-lg border border-slate-800 overflow-auto text-[11px] font-mono scrollbar-thin scrollbar-thumb-slate-700">{JSON.stringify(debugDetails.input, null, 2)}</pre>
-                                </div>
-                                <div className="flex flex-col h-full overflow-hidden">
-                                    <span className="text-[10px] text-emerald-400 font-bold uppercase mb-2 ml-1">Output Data</span>
-                                    <pre
-                                        className="flex-1 bg-black/40 p-3 rounded-lg border border-slate-800 overflow-auto text-[11px] font-mono scrollbar-thin scrollbar-thumb-slate-700">{JSON.stringify(debugDetails.output, null, 2)}</pre>
-                                </div>
-                                {debugDetails.error && (
-                                    <div className="col-span-2 pt-2 border-t border-slate-800">
-                                        <div className="flex items-center gap-2 text-red-400 mb-1 ml-1">
-                                            <AlertCircle size={12}/>
-                                            <span className="text-[10px] font-bold uppercase">Error Log</span>
+                            <div className="flex-1 flex flex-col min-h-0 bg-slate-950">
+                                {/* Scrollable Container */}
+                                <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-800">
+
+                                    {/* 1. ERROR LOG - Full Width at Top */}
+                                    {debugDetails.status === 'FAILED' && (
+                                        <div className="p-3 bg-red-950/20 border border-red-900/40 rounded-lg flex items-start gap-3">
+                                            <AlertCircle size={16} className="text-red-500 mt-0.5 flex-shrink-0"/>
+                                            <div className="flex-1 min-w-0">
+                                                <span className="text-[10px] font-bold text-red-500 uppercase tracking-tight">Execution Error</span>
+                                                <p className="text-red-200 text-xs font-mono break-words leading-relaxed">
+                                                    {typeof debugDetails.metadata === 'string' ? debugDetails.metadata : debugDetails.error || "Check output for details."}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div
-                                            className="bg-red-950/20 border border-red-900/50 p-3 rounded text-red-200 text-xs font-mono">{debugDetails.error}</div>
+                                    )}
+
+                                    {/* 2. HUMAN APPROVAL CONTEXT - Full Width at Top */}
+                                    {debugDetails.status === 'WAITING' && debugDetails.metadata && (
+                                        <div className="p-4 bg-indigo-950/20 border border-indigo-500/30 rounded-xl">
+                                            <div className="flex items-center gap-2 mb-3">
+                                                <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"/>
+                                                <span className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Human Approval Context</span>
+                                            </div>
+                                            <pre className="bg-black/40 p-3 rounded-lg text-indigo-100 text-[11px] font-mono overflow-x-auto border border-indigo-500/10">
+                                {JSON.stringify(debugDetails.metadata, null, 2)}
+                            </pre>
+                                        </div>
+                                    )}
+
+                                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                        {/* Section: Config */}
+                                        <section className="flex flex-col space-y-2">
+                                            <div className="flex items-center gap-2 px-1">
+                                                <div className="w-1 h-3 bg-amber-500 rounded-full"/>
+                                                <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider">Configuration</span>
+                                            </div>
+                                            <pre className="bg-slate-900/50 p-3 rounded-xl border border-slate-800/50 overflow-auto text-[11px] font-mono text-slate-300 max-h-[400px] scrollbar-thin scrollbar-thumb-slate-700">
+                                {JSON.stringify(debugDetails.config, null, 2)}
+                            </pre>
+                                        </section>
+                                        <section className="flex flex-col space-y-2">
+                                            <div className="flex items-center gap-2 px-1">
+                                                <div className="w-1 h-3 bg-blue-500 rounded-full"/>
+                                                <span className="text-[10px] text-blue-400 font-bold uppercase tracking-wider">Input</span>
+                                            </div>
+                                            <pre className="bg-slate-900/50 p-3 rounded-xl border border-slate-800/50 overflow-auto text-[11px] font-mono text-slate-300 max-h-[400px] scrollbar-thin scrollbar-thumb-slate-700">
+                                {JSON.stringify(debugDetails.input, null, 2)}
+                            </pre>
+                                        </section>
+
+                                        {/* Section: Output */}
+                                        <section className="flex flex-col space-y-2">
+                                            <div className="flex items-center gap-2 px-1">
+                                                <div className="w-1 h-3 bg-emerald-500 rounded-full"/>
+                                                <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Output</span>
+                                            </div>
+                                            <pre className="bg-slate-900/50 p-3 rounded-xl border border-slate-800/50 overflow-auto text-[11px] font-mono text-slate-300 max-h-[400px] scrollbar-thin scrollbar-thumb-slate-700">
+                                {JSON.stringify(debugDetails.output, null, 2) || "null"}
+                            </pre>
+                                        </section>
                                     </div>
-                                )}
+                                </div>
                             </div>
                         )}
                     </div>

@@ -34,7 +34,7 @@ const CommonNode: React.FC<any> = ({ id, data, selected }) => {
 
     useEffect(() => {
         if (traceConnected && (nodeStatus === "COMPLETE" || nodeStatus === "ERROR")) {
-            const timer = setTimeout(() => stopLiveTrace(), 60000);
+            const timer = setTimeout(() => stopLiveTrace(), 100000);
             return () => clearTimeout(timer);
         }
     }, [nodeStatus, traceConnected, stopLiveTrace]);
