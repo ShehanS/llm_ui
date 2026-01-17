@@ -34,7 +34,7 @@ const CommonNode: React.FC<any> = ({ id, data, selected }) => {
 
     useEffect(() => {
         if (traceConnected && (nodeStatus === "COMPLETE" || nodeStatus === "ERROR")) {
-            const timer = setTimeout(() => stopLiveTrace(), 100000);
+            const timer = setTimeout(() => stopLiveTrace(), 1000000);
             return () => clearTimeout(timer);
         }
     }, [nodeStatus, traceConnected, stopLiveTrace]);
@@ -90,6 +90,17 @@ const CommonNode: React.FC<any> = ({ id, data, selected }) => {
                     <div className="absolute inset-[1.5px] bg-slate-950 rounded-[9px]" />
                 </div>
             )}
+            {nodeStatus === "WAITING" && traceConnected && !selected && !isHovered && (
+                <div className="absolute inset-[-1.5px] rounded-[10px] overflow-hidden pointer-events-none">
+                    <div
+                        className="absolute inset-[-100%] animate-[spin_3s_linear_infinite]"
+                        style={{
+                            background: "conic-gradient(from 0deg, transparent 0%, #6366f1 25%, #63F1CB 50%, #6366f1 75%, transparent 100%)"
+                        }}
+                    />
+                    <div className="absolute inset-[1.5px] bg-slate-950 rounded-[9px]" />
+                </div>
+            )}
             <div
                 className="w-12 h-full flex items-center justify-center rounded-l-[9px] border-r border-slate-800/50 shrink-0"
                 style={{ backgroundColor: `${data.color}15` }}
@@ -110,7 +121,6 @@ const CommonNode: React.FC<any> = ({ id, data, selected }) => {
                 </div>
             </div>
 
-            {/* Debug Status Badge */}
             {traceConnected && latestTrace && (
                 <div className={cn(
                     "absolute -top-6 left-0 px-2 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider text-white shadow-lg",

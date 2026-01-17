@@ -66,7 +66,7 @@ const Page: FC = () => {
         };
 
         window.addEventListener("resize", handleViewUpdate);
-        const timeout = setTimeout(handleViewUpdate, 10000);
+        const timeout = setTimeout(handleViewUpdate, 350);
 
         return () => {
             window.removeEventListener("resize", handleViewUpdate);
@@ -321,10 +321,8 @@ const Page: FC = () => {
 
                         {isPanelExpanded && (
                             <div className="flex-1 flex flex-col min-h-0 bg-slate-950">
-                                {/* Scrollable Container */}
                                 <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-800">
 
-                                    {/* 1. ERROR LOG - Full Width at Top */}
                                     {debugDetails.status === 'FAILED' && (
                                         <div className="p-3 bg-red-950/20 border border-red-900/40 rounded-lg flex items-start gap-3">
                                             <AlertCircle size={16} className="text-red-500 mt-0.5 flex-shrink-0"/>
@@ -337,7 +335,6 @@ const Page: FC = () => {
                                         </div>
                                     )}
 
-                                    {/* 2. HUMAN APPROVAL CONTEXT - Full Width at Top */}
                                     {debugDetails.status === 'WAITING' && debugDetails.metadata && (
                                         <div className="p-4 bg-indigo-950/20 border border-indigo-500/30 rounded-xl">
                                             <div className="flex items-center gap-2 mb-3">

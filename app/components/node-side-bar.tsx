@@ -21,14 +21,10 @@ const NodeSideBar: React.FC<Props> = ({ isOpen, setIsOpen }) => {
     const onDragStart = (event: React.DragEvent, nodeType: string) => {
         event.dataTransfer.setData("application/reactflow", nodeType);
         event.dataTransfer.effectAllowed = "move";
-
-        // Create a custom drag ghost image if desired,
-        // otherwise, the browser uses the element itself.
     };
 
     return (
         <>
-            {/* TOGGLE HANDLE - Floating on the right edge of the sidebar */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
@@ -47,11 +43,10 @@ const NodeSideBar: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                     isOpen ? "w-[260px] translate-x-0" : "w-0 -translate-x-full"
                 )}
             >
-                {/* Header Section */}
                 <div className="flex h-16 items-center gap-3 border-b border-slate-800 px-6 shrink-0 bg-slate-950/50 backdrop-blur-sm">
                     <Boxes size={20} className="text-indigo-500" />
                     <h3 className="text-xs font-bold uppercase tracking-widest text-slate-200">
-                        Node Catalog
+                        Nodes
                     </h3>
                 </div>
 
