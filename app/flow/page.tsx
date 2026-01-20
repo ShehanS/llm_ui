@@ -186,6 +186,7 @@ const Page: FC = () => {
                 id: `e-${crypto.randomUUID()}`,
                 source: String(e.source),
                 target: String(e.target),
+                type: String(e.type),
                 sourceHandle: e.sourceHandle || undefined,
                 animated: true,
             }));

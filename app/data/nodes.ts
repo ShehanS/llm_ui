@@ -177,10 +177,35 @@ export const NODE_CATALOG = {
             {"id": "default", "label": "Input", "position": "left"}
         ],
         "outputs": [
-            {"id": "success", "label": "Default", "position": "right"},
+            {"id": "success", "label": "Success", "position": "right"},
+            {"id": "action", "label": "Action", "position": "right"},
             {"id": "error", "label": "Error", "position": "right"}
 
         ]
+    },
+    "trace.inbound": {
+        "type": "trace.inbound",
+        "label": "Trace-Inbound",
+        "color": "#06ab7f",
+        "config": {
+            "icon": "",
+            "inputProps": [
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "agentURL",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Agent URL",
+                    "required": true
+                }
+            ]
+        },
+        "inputs": [
+            {"id": "success", "label": "Success", "position": "left"}
+
+        ],
+        "outputs": []
     },
     "trigger.whatsapp": {
         "type": "trigger.whatsapp",
@@ -227,20 +252,6 @@ export const NODE_CATALOG = {
         ],
         "outputs": [
             { "id": "default", "label": "Verified Message", "position": "right" }
-        ]
-    },
-    "whatsapp.send": {
-        "type": "whatsapp.send",
-        "label": "WhatsApp Send",
-        "color": "#22c55e",
-        "config": {
-            "template": "received"
-        },
-        "inputs": [
-            { "id": "in-default", "label": "Input", "position": "left" }
-        ],
-        "outputs": [
-            { "id": "out-success", "label": "Success", "position": "right" }
         ]
     },
     "gmail.send": {
@@ -329,12 +340,51 @@ export const NODE_CATALOG = {
             ]
         },
         "inputs": [
-            {"id": "default", "label": "Input", "position": "left"}
+            {"id": "action", "label": "Action", "position": "left"}
         ],
         "outputs": [
             {"id": "success", "label": "Default", "position": "right"},
             {"id": "error", "label": "Error", "position": "right"}
 
+        ]
+    },
+    "whatsapp.send": {
+        "type": "whatsapp.send",
+        "label": "WhatsApp Send",
+        "color": "#22c55e",
+        "config": {
+            "template": "received"
+        },
+        "inputs": [
+            {"id": "in-default", "label": "Input", "position": "left"}
+        ],
+        "outputs": [
+            {"id": "out-success", "label": "Success", "position": "right"}
+        ]
+    },
+    "whatsapp.receive": {
+        "type": "whatsapp.receive",
+        "label": "WhatsApp Receive",
+        "color": "#22c55e",
+        "config": {
+            "icon": "",
+            "inputProps": [
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "path",
+                    "defaultValue": "",
+                    "value": "/webhook/{flowId}",
+                    "displayName": "Webhook path",
+                    "required": true
+                },
+            ]
+        },
+        "inputs": [
+
+        ],
+        "outputs": [
+            {"id": "out-success", "label": "Success", "position": "right"}
         ]
     }
 };

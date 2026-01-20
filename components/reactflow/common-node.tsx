@@ -26,6 +26,7 @@ const CommonNode: React.FC<any> = ({ id, data, selected }) => {
     };
 
     const latestTrace = useMemo(() => {
+        console.log(traces)
         if (!traceConnected || !Array.isArray(traces)) return null;
         return [...traces].reverse().find((t) => String(t.nodeId) === String(id));
     }, [traces, id, traceConnected]);

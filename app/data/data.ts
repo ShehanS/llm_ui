@@ -1,11 +1,11 @@
 export interface ITool {
     id: number | null;
-    name: string;           // Name used by LLM to call tool
-    description: string;    // Description for LLM instruction
-    type: "script" | "api"; // Logic type
-    code?: string;          // JavaScript for VM2 (if type is script)
-    url?: string;           // Endpoint (if type is api)
-    toolSchema: string;     // Stringified JSON Schema for parameters
+    name: string;
+    description: string;
+    type: "script" | "api";
+    code?: string;
+    url?: string;
+    toolSchema: string;
     status: string;
 }
 
