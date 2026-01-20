@@ -23,7 +23,7 @@ const NavBar: FC = () => {
                         href="/"
                         className="z-10 text-2xl font-bold hover:text-gray-300 transition-colors"
                     >
-                        LLM
+                        TEST FLOW
                     </Link>
 
                     {/* Center - Menu */}

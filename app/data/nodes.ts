@@ -353,13 +353,51 @@ export const NODE_CATALOG = {
         "label": "WhatsApp Send",
         "color": "#22c55e",
         "config": {
-            "template": "received"
+            "icon": "",
+            "inputProps": [
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "accountId",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Account ID",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "token",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Token",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "to",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Whatsapp To",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "from",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Whatsapp From",
+                    "required": true
+                }
+            ]
         },
         "inputs": [
-            {"id": "in-default", "label": "Input", "position": "left"}
+            {"id": "success", "label": "Input", "position": "left"}
         ],
         "outputs": [
-            {"id": "out-success", "label": "Success", "position": "right"}
+
         ]
     },
     "whatsapp.receive": {
@@ -384,7 +422,7 @@ export const NODE_CATALOG = {
 
         ],
         "outputs": [
-            {"id": "out-success", "label": "Success", "position": "right"}
+            {"id": "success", "label": "Success", "position": "right"}
         ]
     }
 };

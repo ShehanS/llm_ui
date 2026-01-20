@@ -86,7 +86,7 @@ const Page: FC = () => {
     };
 
     const onConnect = useCallback(
-        (params: any) => setEdges((eds) => addEdge({...params, animated: true}, eds)),
+        (params: any) => setEdges((eds) => addEdge({...params, animated: true, type:"smoothstep"}, eds)),
         [setEdges]
     );
 
@@ -229,6 +229,7 @@ const Page: FC = () => {
                                         edges: edges.map((e) => ({
                                             source: e.source,
                                             target: e.target,
+                                            type: e.type,
                                             sourceHandle: e.sourceHandle || "default",
                                         })),
                                     };
