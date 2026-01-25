@@ -1,12 +1,7 @@
 export interface ITool {
-    id: number | null;
     name: string;
     description: string;
-    type: "script" | "api";
-    code?: string;
-    url?: string;
-    toolSchema: string;
-    status: string;
+    type?: string;
 }
 
 export interface IAgent {
@@ -18,7 +13,7 @@ export interface IAgent {
     isDefault: boolean;
     model: IModelConfig;
     systemPrompt: string;
-    tools: ITool[];
+    tools: string[];
 }
 
 export interface IModelConfig {
@@ -28,7 +23,6 @@ export interface IModelConfig {
     temperature: number | null;
     apiKey?: string | null;
 }
-
 
 export interface IRoutingConfig {
     id: number;

@@ -64,7 +64,7 @@ const RoutingTab = () => {
     const {
         routingConfigs, routingConfig, agents, loading,
         fetchRoutingConfig, updateRoutingConfig, createNewRouting, deleteRoutingConfig,
-        assignAgentToRoute, removeAgentFromRoute // New actions from store
+        assignAgentToRoute, removeAgentFromRoute
     } = useConfigStore();
 
     const [isAdding, setIsAdding] = useState(false);
@@ -256,7 +256,7 @@ const AgentsTab = () => {
     };
 
     return (
-        <div className="p-8 space-y-6 overflow-y-auto h-full">
+        <div className="p-8 space-y-6 overflow-y-auto h-full bg-slate-950">
             <div className="flex justify-between items-center">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Agent Fleet</h3>
                 <button
@@ -264,60 +264,84 @@ const AgentsTab = () => {
                         agentName: '',
                         displayName: '',
                         systemPrompt: '',
-                        model: {provider: 'openai', name: 'gpt-4o', temperature: 0.7}
+                        model: { provider: 'openai', name: 'gpt-4o', temperature: 0.7 },
+                        tools: [] // Initialize with empty string array
                     })}
                     className="flex items-center gap-2 text-[10px] font-bold uppercase bg-blue-600 text-white px-5 py-2.5 rounded-md hover:bg-blue-500 transition-all"
                 >
-                    <Plus size={14}/> New Agent
+                    <Plus size={14} /> New Agent
                 </button>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
                 {agents.map(agent => (
-                    <div key={agent.id} className="p-5 bg-slate-900/40 border border-slate-800 rounded-xl space-y-5">
+                    <div key={agent.id} className="p-5 bg-slate-900/40 border border-slate-800 rounded-xl space-y-5 group hover:border-slate-700 transition-all">
                         <div className="flex justify-between items-start">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-blue-600/20 rounded-lg text-blue-400"><User size={20}/></div>
+                                <div className="p-2 bg-blue-600/20 rounded-lg text-blue-400">
+                                    <User size={20} />
+                                </div>
                                 <div>
                                     <h4 className="text-sm font-bold text-white">{agent.displayName}</h4>
-                                    <p className="text-[10px] text-slate-500 font-mono uppercase tracking-tighter">{agent.agentName}</p>
+                                    <p className="text-[10px] text-slate-500 font-mono uppercase tracking-tighter">
+                                        {agent.agentName}
+                                    </p>
                                 </div>
                             </div>
                             <div className="flex gap-1">
-                                <button onClick={() => setModal(agent)}
-                                        className="p-2 text-slate-500 hover:text-white hover:bg-slate-800 rounded-md transition-all">
-                                    <Edit3 size={14}/>
+                                <button
+                                    onClick={() => setModal(agent)}
+                                    className="p-2 text-slate-500 hover:text-white hover:bg-slate-800 rounded-md transition-all"
+                                >
+                                    <Edit3 size={14} />
                                 </button>
-                                <button onClick={() => deleteAgent(agent.id!)}
-                                        className="p-2 text-slate-500 hover:text-red-500 hover:bg-slate-800 rounded-md transition-all">
-                                    <Trash2 size={14}/>
+                                <button
+                                    onClick={() => deleteAgent(agent.id!)}
+                                    className="p-2 text-slate-500 hover:text-red-500 hover:bg-slate-800 rounded-md transition-all"
+                                >
+                                    <Trash2 size={14} />
                                 </button>
                             </div>
                         </div>
+
                         <div className="space-y-2">
-                            <label className="text-[9px] font-bold uppercase text-slate-600 tracking-widest">Active
-                                Capabilities</label>
+                            <label className="text-[9px] font-bold uppercase text-slate-600 tracking-widest">
+                                Active Capabilities
+                            </label>
                             <div className="flex flex-wrap gap-2 min-h-[40px] items-center">
-                                {agent.tools?.map((t: any) => (
-                                    <span key={t.id}
-                                          className="flex items-center gap-2 px-2.5 py-1 bg-slate-800 text-[10px] font-mono text-blue-400 border border-slate-700 rounded-md group">
-                                        <Terminal size={10}/> {t.name}
-                                        <button onClick={() => unlinkTool(agent.id!, t.id)}
-                                                className="text-slate-600 hover:text-red-500">
-                                            <X size={10}/>
+                                {agent.tools?.map((toolName: string) => (
+                                    <span
+                                        key={toolName}
+                                        className="flex items-center gap-2 px-2.5 py-1 bg-slate-800 text-[10px] font-mono text-blue-400 border border-slate-700 rounded-md group/tool"
+                                    >
+                                        <Terminal size={10} />
+                                        {toolName}
+                                        <button
+                                            onClick={() => unlinkTool(agent.id!, toolName)}
+                                            className="text-slate-600 hover:text-red-500 transition-colors"
+                                        >
+                                            <X size={10} />
                                         </button>
                                     </span>
                                 ))}
+
                                 <div className="relative">
                                     <BaseSelect
-                                        className="w-36 py-1 text-[10px] border-dashed border-slate-700"
+                                        className="w-40 py-1 text-[10px] border-dashed border-slate-700 bg-transparent hover:bg-slate-900 transition-colors"
                                         value=""
-                                        onChange={(e) => assignTool(agent.id!, Number(e.target.value))}
+                                        onChange={(e) => {
+                                            if(e.target.value) assignTool(agent.id!, e.target.value);
+                                        }}
                                     >
                                         <option value="">+ Link Tool</option>
-                                        {tools.filter(t => !agent.tools?.some((at: any) => at.id === t.id)).map(t => (
-                                            <option key={t.id} value={t.id}>{t.name}</option>
-                                        ))}
+                                        {tools
+                                            .filter(t => !agent.tools?.includes(t.name))
+                                            .map(t => (
+                                                <option key={t.name} value={t.name}>
+                                                    {t.name}
+                                                </option>
+                                            ))
+                                        }
                                     </BaseSelect>
                                 </div>
                             </div>
@@ -327,48 +351,56 @@ const AgentsTab = () => {
             </div>
 
             {modal && (
-                <div
-                    className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-6 animate-in fade-in duration-200">
-                    <div
-                        className="bg-slate-950 border border-slate-800 p-8 rounded-2xl w-full max-w-lg space-y-6 shadow-2xl">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-6 animate-in fade-in duration-200">
+                    <div className="bg-slate-950 border border-slate-800 p-8 rounded-2xl w-full max-w-lg space-y-6 shadow-2xl">
                         <div className="flex justify-between items-center">
                             <h3 className="font-bold text-sm uppercase tracking-widest text-blue-400">
-                                {modal.id ? 'Edit Agent' : 'Create Agent'}
+                                {modal.id ? 'Modify Agent' : 'Deploy New Agent'}
                             </h3>
-                            <button onClick={() => setModal(null)}><X size={20}/></button>
+                            <button onClick={() => setModal(null)} className="text-slate-500 hover:text-white">
+                                <X size={20} />
+                            </button>
                         </div>
+
                         <div className="space-y-4">
                             <div className="space-y-1">
-                                <label className="text-[10px] text-slate-500 uppercase font-bold ml-1">Agent ID
-                                    Name</label>
-                                <input placeholder="e.g. supportAgent"
-                                       className="w-full bg-slate-900 border border-slate-800 p-3 text-xs rounded-md text-white"
-                                       value={modal.agentName}
-                                       onChange={e => setModal({...modal, agentName: e.target.value})}/>
+                                <label className="text-[10px] text-slate-500 uppercase font-bold ml-1">System Identifier</label>
+                                <input
+                                    placeholder="e.g. weather_expert"
+                                    className="w-full bg-slate-900 border border-slate-800 p-3 text-xs rounded-md text-white focus:border-blue-500 outline-none transition-colors"
+                                    value={modal.agentName}
+                                    onChange={e => setModal({ ...modal, agentName: e.target.value })}
+                                />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-[10px] text-slate-500 uppercase font-bold ml-1">Display
-                                    Label</label>
-                                <input placeholder="e.g. Support Specialist"
-                                       className="w-full bg-slate-900 border border-slate-800 p-3 text-xs rounded-md text-white"
-                                       value={modal.displayName}
-                                       onChange={e => setModal({...modal, displayName: e.target.value})}/>
+                                <label className="text-[10px] text-slate-500 uppercase font-bold ml-1">Friendly Name</label>
+                                <input
+                                    placeholder="e.g. Weather Specialist"
+                                    className="w-full bg-slate-900 border border-slate-800 p-3 text-xs rounded-md text-white focus:border-blue-500 outline-none transition-colors"
+                                    value={modal.displayName}
+                                    onChange={e => setModal({ ...modal, displayName: e.target.value })}
+                                />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-[10px] text-slate-500 uppercase font-bold ml-1">System
-                                    Instructions</label>
-                                <textarea placeholder="You are a helpful assistant..." rows={6}
-                                          className="w-full bg-slate-900 border border-slate-800 p-4 text-xs rounded-md font-mono text-slate-300"
-                                          value={modal.systemPrompt}
-                                          onChange={e => setModal({...modal, systemPrompt: e.target.value})}/>
+                                <label className="text-[10px] text-slate-500 uppercase font-bold ml-1">Core Directives</label>
+                                <textarea
+                                    placeholder="Define the agent's behavior and personality..."
+                                    rows={6}
+                                    className="w-full bg-slate-900 border border-slate-800 p-4 text-xs rounded-md font-mono text-slate-300 focus:border-blue-500 outline-none transition-colors resize-none"
+                                    value={modal.systemPrompt}
+                                    onChange={e => setModal({ ...modal, systemPrompt: e.target.value })}
+                                />
                             </div>
                         </div>
+
                         <div className="flex gap-3 pt-4">
                             <button
                                 onClick={handleAgentSave}
-                                className="flex-1 bg-blue-600 py-3 rounded-xl font-bold text-xs uppercase shadow-lg shadow-blue-900/30 hover:bg-blue-500 transition-all"
+                                disabled={loading}
+                                className="flex-1 bg-blue-600 py-3 rounded-xl font-bold text-xs uppercase shadow-lg shadow-blue-900/30 hover:bg-blue-500 transition-all flex items-center justify-center gap-2"
                             >
-                                {modal.id ? 'Update Agent' : 'Create Agent'}
+                                {loading ? <Sparkles size={14} className="animate-spin" /> : <Save size={14} />}
+                                {modal.id ? 'Save Changes' : 'Initialize Agent'}
                             </button>
                             <button
                                 onClick={() => setModal(null)}
@@ -384,35 +416,26 @@ const AgentsTab = () => {
     );
 };
 
-/* --- TOOL REGISTRY TAB --- */
 const ToolsTab = () => {
     const {tools, createNewTool, updateTool, deleteTool} = useConfigStore();
     const [modal, setModal] = useState<any>(null);
 
     return (
         <div className="p-8 space-y-6 overflow-y-auto h-full bg-slate-950">
-            <div className="flex justify-between items-center">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Tools Registry</h3>
-                <button onClick={() => setModal({name: '', description: '', type: 'script', code: ''})}
-                        className="flex items-center gap-2 text-[10px] font-bold uppercase bg-emerald-600 text-white px-5 py-2.5 rounded-md hover:bg-emerald-500 transition-all">
-                    <Plus size={14}/> Register Tool
-                </button>
-            </div>
+            {/*<div className="flex justify-between items-center">*/}
+            {/*    <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Tools Registry</h3>*/}
+            {/*    <button onClick={() => setModal({name: '', description: '', type: 'script', code: ''})}*/}
+            {/*            className="flex items-center gap-2 text-[10px] font-bold uppercase bg-emerald-600 text-white px-5 py-2.5 rounded-md hover:bg-emerald-500 transition-all">*/}
+            {/*        <Plus size={14}/> Register Tool*/}
+            {/*    </button>*/}
+            {/*</div>*/}
 
             <div className="grid grid-cols-3 gap-6">
-                {tools.map(tool => (
-                    <div key={tool.id}
+                {tools.map((tool, index) => (
+                    <div key={index}
                          className="p-5 bg-slate-900/40 border border-slate-800 rounded-xl group hover:border-emerald-500/30 transition-all">
                         <div className="flex justify-between items-center mb-4">
                             <div className="p-2 bg-emerald-600/10 rounded-lg text-emerald-500"><Terminal size={18}/>
-                            </div>
-                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onClick={() => setModal(tool)}
-                                        className="p-1.5 text-slate-500 hover:text-white hover:bg-slate-800 rounded-md">
-                                    <Edit3 size={14}/></button>
-                                <button onClick={() => deleteTool(tool.id!)}
-                                        className="p-1.5 text-slate-500 hover:text-red-500 hover:bg-slate-800 rounded-md">
-                                    <Trash2 size={14}/></button>
                             </div>
                         </div>
                         <h4 className="text-sm font-bold text-slate-200 mb-1">{tool.name}</h4>

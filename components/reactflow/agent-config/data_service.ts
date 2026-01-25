@@ -1,6 +1,8 @@
-import {create} from "zustand";
+"use client";
+
+import { create } from "zustand";
 import * as api from "./api";
-import {IAgent, IRoutingConfig, ITool} from "@/app/data/data";
+import { IAgent, IRoutingConfig, ITool } from "@/app/data/data";
 
 interface ConfigStore {
     loading: boolean;
@@ -26,8 +28,9 @@ interface ConfigStore {
     updateTool: (id: number, tool: any) => Promise<void>;
     deleteTool: (id: number) => Promise<void>;
 
-    assignTool: (agentId: number, toolId: number) => Promise<void>;
-    unlinkTool: (agentId: number, toolId: number) => Promise<void>;
+    // Updated: Accept string toolName instead of toolId
+    assignTool: (agentId: number, toolName: string) => Promise<void>;
+    unlinkTool: (agentId: number, toolName: string) => Promise<void>;
 
     assignAgentToRoute: (routeId: number, agentId: number) => Promise<void>;
     removeAgentFromRoute: (routeId: number, agentId: number) => Promise<void>;
@@ -60,27 +63,27 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
                 loading: false
             });
         } catch (e: any) {
-            set({error: e.message || "Failed to load data", loading: false});
+            set({ error: e.message || "Failed to load data", loading: false });
         }
     },
 
     fetchRoutingConfigs: async () => {
-        set({loading: true});
+        set({ loading: true });
         try {
             const routingConfigs = await api.getRoutingConfigs();
-            set({routingConfigs: routingConfigs, loading: false});
+            set({ routingConfigs, loading: false });
         } catch (e: any) {
-            set({error: e.message, loading: false});
+            set({ error: e.message, loading: false });
         }
     },
 
     fetchRoutingConfig: async (routeName: string) => {
-        set({loading: true, currentRouteName: routeName});
+        set({ loading: true, currentRouteName: routeName });
         try {
             const routingConfig = await api.getRoutingConfig(routeName);
-            set({routingConfig: routingConfig, loading: false});
+            set({ routingConfig, loading: false });
         } catch (e: any) {
-            set({error: e.message, loading: false});
+            set({ error: e.message, loading: false });
         }
     },
 
@@ -161,18 +164,18 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
         } catch (e: any) { set({ error: e.message, loading: false }); }
     },
 
-    assignTool: async (agentId, toolId) => {
+    assignTool: async (agentId, toolName) => {
         set({ loading: true });
         try {
-            await api.linkToolToAgent(agentId, toolId);
+            await api.linkToolToAgent(agentId, toolName);
             await get().fetchInitialData(get().currentRouteName);
         } catch (e: any) { set({ error: e.message, loading: false }); }
     },
 
-    unlinkTool: async (agentId, toolId) => {
+    unlinkTool: async (agentId, toolName) => {
         set({ loading: true });
         try {
-            await api.unlinkToolFromAgent(agentId, toolId);
+            await api.unlinkToolFromAgent(agentId, toolName);
             await get().fetchInitialData(get().currentRouteName);
         } catch (e: any) { set({ error: e.message, loading: false }); }
     },

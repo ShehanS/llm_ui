@@ -337,6 +337,19 @@ export const NODE_CATALOG = {
                     "value": "",
                     "required": false,
                 },
+                {
+                    "type": "approval",
+                    "name": "approval",
+                    "displayName": "Approval By",
+                    "defaultValue": "",
+                    "value": "",
+                    "values": [
+                        {"name": "WhatApp", "value": "whatapp"},
+                        {"name": "Webhook", "value": "webhook"},
+                        {"name": "Test", "value": "test"}
+                    ],
+                    "required": false,
+                },
             ]
         },
         "inputs": [

@@ -1,6 +1,6 @@
 import {IAgent, IMainConfig, IResponseMessage, IRoutingConfig, ITool} from "@/app/data/data";
 
-const API_BASE = "http://localhost:8080/service/api/config";
+const API_BASE = "http://localhost:8080/api/config";
 
 export async function getFullConfigByRouteName(routeName: string): Promise<IMainConfig> {
     const res = await fetch(`${API_BASE}/full/${routeName}`, {cache: "no-store"});

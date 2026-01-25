@@ -4,8 +4,9 @@ import React from "react";
 import {ObjectMapper} from "@/components/reactflow/object-mapper";
 import {ChevronDown, ChevronLeft, ChevronRight, Info, Settings2, SlidersHorizontal} from "lucide-react";
 import {cn} from "@/lib/utils";
-import {AgentConfig} from "@/components/reactflow/agent-config/agent-config";
 import RouteAgentSelector from "@/app/components/route-agent-selector";
+import {Switch} from "@/components/ui/switch";
+import Approval from "@/components/reactflow/Approval";
 
 type Props = {
     node: any;
@@ -119,6 +120,11 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
                                                 <ObjectMapper onChange={onChange} value={prop}/>
                                             </div>
                                         );
+
+                                    case "approval":
+                                        return (
+                                           <Approval key={1} onChange={onChange} value={prop.value} values={prop.values}/>
+                                        )
 
                                     case "routeAgent":
                                         return (

@@ -1,6 +1,6 @@
 import {IAgent, IResponseMessage, ITool} from "../data/data";
 
-const API_BASE = "http://localhost:8080/service/api/tools";
+const API_BASE = "http://localhost:8080/api/tools";
 
 export async function uploadPlugin(file: File): Promise<ITool> {
     const formData = new FormData();

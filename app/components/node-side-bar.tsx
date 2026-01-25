@@ -35,8 +35,6 @@ const NodeSideBar: React.FC<Props> = ({ isOpen, setIsOpen }) => {
             >
                 {isOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
             </button>
-
-            {/* SIDEBAR CONTAINER */}
             <div
                 className={cn(
                     "fixed left-0 top-0 z-40 h-full border-r border-slate-800 bg-slate-950 transition-all duration-300 ease-in-out shadow-2xl overflow-hidden flex flex-col",
@@ -50,7 +48,6 @@ const NodeSideBar: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                     </h3>
                 </div>
 
-                {/* Search Bar (Visual only for now) */}
                 <div className="px-4 py-3 border-b border-slate-900/50">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" size={12} />
@@ -76,7 +73,6 @@ const NodeSideBar: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                                 onDragStart={(e) => onDragStart(e, node.type)}
                                 className="group relative flex items-center gap-3 p-3 rounded-lg border border-slate-800 bg-slate-900/30 hover:bg-slate-900 hover:border-slate-700 cursor-grab active:cursor-grabbing transition-all duration-200 select-none"
                             >
-                                {/* Color Indicator / Icon Area */}
                                 <div
                                     className="h-8 w-8 rounded-md flex items-center justify-center shrink-0 shadow-inner"
                                     style={{
@@ -89,7 +85,6 @@ const NodeSideBar: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                                     </span>
                                 </div>
 
-                                {/* Node Label */}
                                 <div className="flex flex-col overflow-hidden">
                                     <span className="text-[12px] font-semibold text-slate-300 group-hover:text-white truncate">
                                         {node.label}
@@ -99,12 +94,10 @@ const NodeSideBar: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                                     </span>
                                 </div>
 
-                                {/* Drag Handle Icon */}
                                 <div className="ml-auto text-slate-700 group-hover:text-slate-500 transition-colors">
                                     <GripVertical size={14} />
                                 </div>
 
-                                {/* Subtle background glow matching node color on hover */}
                                 <div
                                     className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"
                                     style={{ backgroundColor: node.color }}
