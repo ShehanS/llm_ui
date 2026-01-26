@@ -1,7 +1,7 @@
 import { IExecutionTrace, IResponseMessage, IWorkflow } from "../data/data";
 
-const API_BASE = "http://localhost:8080/service/api/workflow";
-const WS_BASE = "ws://localhost:8080/service/api/workflow/ws/trace";
+const API_BASE = "http://localhost:8080/api/workflow";
+const WS_BASE = "ws://localhost:8080/api/workflow/ws/trace";
 
 export async function saveWorkflow(workflow: IWorkflow): Promise<any> {
     const res = await fetch(`${API_BASE}/save`, {
