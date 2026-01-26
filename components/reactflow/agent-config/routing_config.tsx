@@ -236,7 +236,7 @@ const RoutingTab = () => {
 
 
 const AgentsTab = () => {
-    const {agents, tools, createNewAgent, updateAgent, deleteAgent, assignTool, unlinkTool} = useConfigStore();
+    const {agents, tools, createNewAgent, updateAgent, deleteAgent, assignTool, unlinkTool, loading} = useConfigStore();
     const [modal, setModal] = useState<any>(null);
 
     const handleAgentSave = async () => {
