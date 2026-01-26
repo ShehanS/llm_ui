@@ -4,12 +4,13 @@ import React, {useEffect, useState} from 'react';
 import {useConfigStore} from "@/components/reactflow/agent-config/data_service";
 import {BaseSelect} from "@/app/components/base-select";
 import {
+    AlertTriangle,
     BrainCircuit,
-    Edit3,
-    Key,
+    Edit3, Info,
     Plus,
     PlusCircle,
     Save,
+    ShieldAlert, ShieldCheck,
     Sparkles,
     Terminal,
     Trash2,
@@ -17,6 +18,7 @@ import {
     Wrench,
     X
 } from "lucide-react";
+import {useSettingsStore} from "@/app/settings/data_service";
 
 export const OrchestratorManager = () => {
     const [activeTab, setActiveTab] = useState<'routing' | 'agents' | 'tools'>('routing');
@@ -416,85 +418,68 @@ const AgentsTab = () => {
     );
 };
 
-const ToolsTab = () => {
-    const {tools, createNewTool, updateTool, deleteTool} = useConfigStore();
-    const [modal, setModal] = useState<any>(null);
+export const ToolsTab = () => {
+    const { tools, toggleDanger, loading } = useConfigStore();
 
     return (
         <div className="p-8 space-y-6 overflow-y-auto h-full bg-slate-950">
-            {/*<div className="flex justify-between items-center">*/}
-            {/*    <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Tools Registry</h3>*/}
-            {/*    <button onClick={() => setModal({name: '', description: '', type: 'script', code: ''})}*/}
-            {/*            className="flex items-center gap-2 text-[10px] font-bold uppercase bg-emerald-600 text-white px-5 py-2.5 rounded-md hover:bg-emerald-500 transition-all">*/}
-            {/*        <Plus size={14}/> Register Tool*/}
-            {/*    </button>*/}
-            {/*</div>*/}
+            <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Capabilities Registry</h3>
+            </div>
 
-            <div className="grid grid-cols-3 gap-6">
-                {tools.map((tool, index) => (
-                    <div key={index}
-                         className="p-5 bg-slate-900/40 border border-slate-800 rounded-xl group hover:border-emerald-500/30 transition-all">
-                        <div className="flex justify-between items-center mb-4">
-                            <div className="p-2 bg-emerald-600/10 rounded-lg text-emerald-500"><Terminal size={18}/>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {tools.map((tool) => (
+                    <div
+                        key={tool.name}
+                        className={`p-5 rounded-xl border transition-all duration-300 bg-slate-900/40 ${
+                            tool.dangerous
+                                ? 'border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.1)]'
+                                : 'border-slate-800'
+                        }`}
+                    >
+                        <div className="flex justify-between items-start mb-4">
+                            <div className={`p-2 rounded-lg ${tool.dangerous ? 'bg-red-500/20 text-red-500' : 'bg-emerald-600/10 text-emerald-500'}`}>
+                                <Terminal size={18}/>
                             </div>
+
+                            {/* DANGER TOGGLE */}
+                            <button
+                                onClick={() => toggleDanger(tool.name, !!tool.dangerous)}
+                                disabled={loading}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[10px] font-bold transition-all ${
+                                    tool.dangerous
+                                        ? 'bg-red-600 text-white hover:bg-red-500'
+                                        : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                }`}
+                            >
+                                {tool.dangerous ? <ShieldAlert size={12}/> : <ShieldCheck size={12}/>}
+                                {tool.dangerous ? 'DANGEROUS' : 'MARK SAFE'}
+                            </button>
                         </div>
-                        <h4 className="text-sm font-bold text-slate-200 mb-1">{tool.name}</h4>
-                        <p className="text-[10px] text-slate-500 line-clamp-2 h-8">{tool.description || 'No description provided.'}</p>
+
+                        <div className="space-y-2">
+                            <h4 className="text-sm font-bold text-slate-200 flex items-center gap-2">
+                                {tool.name}
+                                {tool.dangerous && <AlertTriangle size={14} className="text-red-500 animate-pulse" />}
+                            </h4>
+                            <p className="text-[11px] text-slate-500 line-clamp-2 h-8">
+                                {tool.description || 'No description provided.'}
+                            </p>
+                        </div>
+
                         <div className="mt-4 pt-4 border-t border-slate-800/50 flex items-center justify-between">
-                            <span
-                                className="text-[9px] font-bold px-2 py-0.5 bg-slate-800 rounded uppercase tracking-widest text-slate-400">{tool.type}</span>
+                            <span className="text-[9px] font-bold px-2 py-0.5 bg-slate-800 rounded uppercase tracking-widest text-slate-400">
+                                {tool.type}
+                            </span>
+                            {tool.dangerous && (
+                                <span className="text-[8px] text-red-400 font-bold uppercase tracking-tighter">
+                                    Requires Manual Approval
+                                </span>
+                            )}
                         </div>
                     </div>
                 ))}
             </div>
-
-            {modal && (
-                <div className="fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center z-50 p-6">
-                    <div
-                        className="bg-slate-950 border border-slate-800 p-8 rounded-2xl w-full max-w-4xl space-y-6 shadow-2xl">
-                        <div className="flex justify-between items-center"><h3
-                            className="font-bold text-sm uppercase tracking-widest text-emerald-500">{modal.id ? 'Edit Tool' : 'Register New Tool'}</h3>
-                            <button onClick={() => setModal(null)}><X size={20}/></button>
-                        </div>
-                        <div className="grid grid-cols-12 gap-6">
-                            <div className="col-span-4 space-y-4">
-                                <input placeholder="Tool Name"
-                                       className="w-full bg-slate-900 border border-slate-800 p-3 text-xs rounded-md"
-                                       value={modal.name} onChange={e => setModal({...modal, name: e.target.value})}/>
-                                <BaseSelect value={modal.type}
-                                            onChange={e => setModal({...modal, type: e.target.value})}>
-                                    <option value="script">Local Script (JS)</option>
-                                    <option value="api">External API</option>
-                                </BaseSelect>
-                                <textarea placeholder="Description" rows={4}
-                                          className="w-full bg-slate-900 border border-slate-800 p-3 text-xs rounded-md"
-                                          value={modal.description}
-                                          onChange={e => setModal({...modal, description: e.target.value})}/>
-                            </div>
-                            <div className="col-span-8 space-y-1.5">
-                                <label className="text-[10px] font-bold text-slate-500 uppercase">JavaScript
-                                    Implementation</label>
-                                <textarea rows={15}
-                                          className="w-full bg-black border border-slate-800 p-4 text-xs font-mono text-emerald-400 rounded-md scrollbar-thin scrollbar-thumb-slate-800"
-                                          value={modal.code}
-                                          onChange={e => setModal({...modal, code: e.target.value})}/>
-                            </div>
-                        </div>
-                        <div className="flex gap-3 pt-4 border-t border-slate-800">
-                            <button onClick={() => {
-                                modal.id ? updateTool(modal.id, modal) : createNewTool(modal);
-                                setModal(null);
-                            }}
-                                    className="flex-1 bg-emerald-600 py-3 rounded-xl font-bold text-xs uppercase shadow-lg shadow-emerald-900/30 hover:bg-emerald-500">Save
-                                Tool
-                            </button>
-                            <button onClick={() => setModal(null)}
-                                    className="w-32 bg-slate-800 py-3 rounded-xl font-bold text-xs uppercase text-slate-400">Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

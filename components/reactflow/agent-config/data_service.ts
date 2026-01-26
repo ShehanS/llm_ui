@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import * as api from "./api";
 import { IAgent, IRoutingConfig, ITool } from "@/app/data/data";
+import {toggleToolDanger} from "@/app/settings/api";
 
 interface ConfigStore {
     loading: boolean;
@@ -27,6 +28,7 @@ interface ConfigStore {
     createNewTool: (tool: any) => Promise<void>;
     updateTool: (id: number, tool: any) => Promise<void>;
     deleteTool: (id: number) => Promise<void>;
+    toggleDanger: (toolName: string, currentStatus: boolean) => Promise<void>;
 
     // Updated: Accept string toolName instead of toolId
     assignTool: (agentId: number, toolName: string) => Promise<void>;
@@ -212,5 +214,18 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
             alert("AI Sync failed.");
             set({ loading: false });
         }
-    }
+    },
+    toggleDanger: async (toolName: string, currentStatus: boolean) => {
+        const newStatus = !currentStatus;
+        try {
+            await toggleToolDanger(toolName, newStatus);
+            set({
+                tools: get().tools.map(t =>
+                    t.name === toolName ? { ...t, dangerous: newStatus } : t
+                )
+            });
+        } catch (e: any) {
+            set({ error: e.message });
+        }
+    },
 }));

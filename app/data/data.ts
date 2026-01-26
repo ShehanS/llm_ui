@@ -1,7 +1,8 @@
 export interface ITool {
     name: string;
     description: string;
-    type?: string;
+    type: string;
+    dangerous: boolean;
 }
 
 export interface IAgent {

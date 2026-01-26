@@ -1,6 +1,6 @@
 import {IAgent, ITool} from "@/app/data/data";
 import {create} from "zustand";
-import {fetchAgents, fetchPlugins, uploadPlugin} from "@/app/settings/api";
+import {fetchAgents, fetchPlugins, toggleToolDanger, uploadPlugin} from "@/app/settings/api";
 
 interface SettingsStore {
     tools: ITool[];
@@ -10,6 +10,7 @@ interface SettingsStore {
     loadingTools: () => Promise<void>;
     upload: (file: File) => Promise<void>;
     loadingAgents: (file: File) => Promise<void>;
+
 }
 
 export const useSettingsStore = create<SettingsStore>((set, get) => ({
@@ -27,6 +28,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({loading: false, error: e.message});
         }
     },
+
 
     uploadTool: async (file: File) => {
         set({loading: true});
@@ -47,4 +49,5 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             set({loading: false, error: e.message});
         }
     }
+
 }));
