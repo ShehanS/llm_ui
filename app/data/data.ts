@@ -50,7 +50,8 @@ export interface INode {
     label: string | null;
     color: string | null;
     position: IPosition | null;
-    config: any | null;
+    config: IConfig | null;
+    data: IData;
 }
 
 export interface IEdge {
@@ -98,4 +99,37 @@ export interface IExecutionTrace {
     completedAt?: string | null;
     error?: string | null;
     metadata?: any;
+}
+
+export type IInputPropType = 'text' | 'select' | 'mapper' | 'approval' | 'routeAgent';
+
+
+export interface ISelectOption {
+    name: string;
+    value: string;
+}
+
+export interface IConfig {
+    icon: string;
+    inputProps: IInputProp[]
+
+}
+
+export interface IData {
+    inputProps: IInputProp[];
+}
+
+export interface IInputProp {
+    type: IInputPropType;
+    name: string;
+    displayName?: string;
+    required?: boolean;
+    disabled?: boolean;
+    dependOn?: string;
+    depend?: string;
+    values?: ISelectOption[] | any;
+    defaultValue?: string;
+    value?: ISelectOption[] | any;
+    placeholder?: string;
+
 }

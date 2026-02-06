@@ -57,8 +57,8 @@ export const NODE_CATALOG = {
         },
         "inputs": [],
         "outputs": [
-            { "id": "default", "label": "Default", "position": "right" },
-            { "id": "error", "label": "Error", "position": "right" }
+            {"id": "default", "label": "Success", "position": "right"},
+            {"id": "error", "label": "Error", "position": "right"}
         ]
     },
     "http.response": {
@@ -202,7 +202,7 @@ export const NODE_CATALOG = {
             ]
         },
         "inputs": [
-            {"id": "success", "label": "Success", "position": "left"}
+            {"id": "success", "label": "Input", "position": "left"}
 
         ],
         "outputs": []
@@ -312,20 +312,76 @@ export const NODE_CATALOG = {
             "icon": "",
             "inputProps": [
                 {
+                    "type": "approval",
+                    "name": "approval",
+                    "depend": "whatapp",
+                    "displayName": "Approval By",
+                    "defaultValue": "",
+                    "value": "",
+                    "values": [
+                        {"name": "WhatApp", "value": "whatapp"},
+                        {"name": "Webhook", "value": "webhook"}
+                    ],
+                    "required": false,
+                },
+                {
                     "type": "text",
                     "values": [],
+                    "name": "accountId",
+                    "defaultValue": "",
+                    "value": "",
+                    "dependOn": "whatapp",
+                    "displayName": "Account ID(Whatapp-twillo)",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "token",
+                    "defaultValue": "",
+                    "dependOn": "whatapp",
+                    "value": "",
+                    "displayName": "Token(Whatapp-twillo)",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "to",
+                    "defaultValue": "",
+                    "dependOn": "whatapp",
+                    "value": "",
+                    "displayName": "Whatsapp To(Whatapp-twillo)",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "from",
+                    "defaultValue": "",
+                    "dependOn": "whatapp",
+                    "value": "",
+                    "displayName": "Whatsapp From(Whatapp-twillo)",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "dependOn": "webhook",
                     "name": "outboundWebhookUrl",
                     "defaultValue": "",
                     "value": "",
                     "displayName": "Outbound Webhook",
-                    "required": true
+                    "required": true,
+                    "disabled": false
                 },
                 {
                     "type": "text",
                     "values": [],
                     "name": "inboundWebhookUrl",
                     "defaultValue": "",
-                    "value": "http://localhost:8080/service/webhook/{runId}/{sourceHandler}",
+                    "dependOn": "webhook",
+                    "value": "/session/{sessionId}/decide",
                     "displayName": "Inbound Webhook",
                     "required": true
                 },
@@ -337,26 +393,13 @@ export const NODE_CATALOG = {
                     "value": "",
                     "required": false,
                 },
-                {
-                    "type": "approval",
-                    "name": "approval",
-                    "displayName": "Approval By",
-                    "defaultValue": "",
-                    "value": "",
-                    "values": [
-                        {"name": "WhatApp", "value": "whatapp"},
-                        {"name": "Webhook", "value": "webhook"},
-                        {"name": "Test", "value": "test"}
-                    ],
-                    "required": false,
-                },
             ]
         },
         "inputs": [
-            {"id": "action", "label": "Action", "position": "left"}
+            {"id": "action", "label": "Action In", "position": "left"}
         ],
         "outputs": [
-            {"id": "success", "label": "Default", "position": "right"},
+            {"id": "success", "label": "Success", "position": "right"},
             {"id": "error", "label": "Error", "position": "right"}
 
         ]

@@ -18,11 +18,18 @@ const CommonNode: React.FC<any> = ({ id, data, selected }) => {
     );
 
     const [isHovered, setIsHovered] = useState(false);
+    const [hoveredHandle, setHoveredHandle] = useState<string | null>(null);
+    const [labelsVisible, setLabelsVisible] = useState(true);
 
     const getHandleColor = (handleId: string) => {
         const normalizedId = handleId?.toLowerCase();
         if (normalizedId === "error") return "#ef4444";
         return "#6366f1";
+    };
+
+    const handleDoubleClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setLabelsVisible(!labelsVisible);
     };
 
     const latestTrace = useMemo(() => {
@@ -66,6 +73,7 @@ const CommonNode: React.FC<any> = ({ id, data, selected }) => {
         <div
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            onDoubleClick={handleDoubleClick}
             className={cn(
                 "relative flex items-center transition-all duration-200",
                 nodeStatus === "RUNNING" && traceConnected && "animate-pulse"
@@ -142,40 +150,72 @@ const CommonNode: React.FC<any> = ({ id, data, selected }) => {
             )}
             <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-center gap-2 -translate-x-1/2">
                 {data.inputs?.map((input: any) => (
-                    <Handle
+                    <div
                         key={input.id}
-                        id={input.id}
-                        type="target"
-                        position={Position.Left}
-                        style={{
-                            position: 'relative',
-                            top: 'auto',
-                            transform: 'none',
-                            background: getHandleColor(input.id),
-                            width: 8,
-                            height: 8,
-                            border: '2px solid #020617'
-                        }}
-                    />
+                        className="relative flex items-center"
+                        onMouseEnter={() => setHoveredHandle(`input-${input.id}`)}
+                        onMouseLeave={() => setHoveredHandle(null)}
+                    >
+                        {labelsVisible && (
+                            <div className="absolute right-full mr-1 px-1.5 py-0.5 bg-slate-900/95 text-slate-300 text-[7px] font-semibold rounded shadow-md border border-slate-700/50 whitespace-nowrap max-w-[60px] truncate">
+                                {input.label || input.id}
+                            </div>
+                        )}
+                        <Handle
+                            id={input.id}
+                            type="target"
+                            position={Position.Left}
+                            style={{
+                                position: 'relative',
+                                top: 'auto',
+                                transform: 'none',
+                                background: getHandleColor(input.id),
+                                width: 8,
+                                height: 8,
+                                border: '2px solid #020617'
+                            }}
+                        />
+                        {hoveredHandle === `input-${input.id}` && (
+                            <div className="absolute right-full mr-20 top-1/2 -translate-y-1/2 px-2 py-1 bg-slate-900 text-white text-[9px] font-medium rounded shadow-lg whitespace-nowrap border border-slate-700 z-50">
+                                {input.label || input.id}
+                            </div>
+                        )}
+                    </div>
                 ))}
             </div>
             <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center gap-2 translate-x-1/2">
                 {data.outputs?.map((output: any) => (
-                    <Handle
+                    <div
                         key={output.id}
-                        id={output.id}
-                        type="source"
-                        position={Position.Right}
-                        style={{
-                            position: 'relative',
-                            top: 'auto',
-                            transform: 'none',
-                            background: getHandleColor(output.id),
-                            width: 8,
-                            height: 8,
-                            border: '2px solid #020617'
-                        }}
-                    />
+                        className="relative flex items-center"
+                        onMouseEnter={() => setHoveredHandle(`output-${output.id}`)}
+                        onMouseLeave={() => setHoveredHandle(null)}
+                    >
+                        <Handle
+                            id={output.id}
+                            type="source"
+                            position={Position.Right}
+                            style={{
+                                position: 'relative',
+                                top: 'auto',
+                                transform: 'none',
+                                background: getHandleColor(output.id),
+                                width: 8,
+                                height: 8,
+                                border: '2px solid #020617'
+                            }}
+                        />
+                        {labelsVisible && (
+                            <div className="absolute left-full ml-1 px-1.5 py-0.5 bg-slate-900/95 text-slate-300 text-[7px] font-semibold rounded shadow-md border border-slate-700/50 whitespace-nowrap max-w-[60px] truncate">
+                                {output.label || output.id}
+                            </div>
+                        )}
+                        {hoveredHandle === `output-${output.id}` && (
+                            <div className="absolute left-full ml-20 top-1/2 -translate-y-1/2 px-2 py-1 bg-slate-900 text-white text-[9px] font-medium rounded shadow-lg whitespace-nowrap border border-slate-700 z-50">
+                                {output.label || output.id}
+                            </div>
+                        )}
+                    </div>
                 ))}
             </div>
         </div>
