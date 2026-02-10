@@ -367,6 +367,16 @@ export const NODE_CATALOG = {
                 {
                     "type": "text",
                     "values": [],
+                    "name": "path",
+                    "defaultValue": "",
+                    "dependOn": "whatapp",
+                    "value": "/webhook/{flowId}",
+                    "displayName": "Whatsapp Webhook(Whatapp-twillo)",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
                     "dependOn": "webhook",
                     "name": "outboundWebhookUrl",
                     "defaultValue": "",
