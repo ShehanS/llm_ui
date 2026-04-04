@@ -329,7 +329,7 @@ export const NODE_CATALOG = {
                     "values": [],
                     "name": "accountId",
                     "defaultValue": "",
-                    "value": "AC49a3ad33b96d45dd0f83a4edd48a9a81",
+                    "value": "",
                     "dependOn": "whatapp",
                     "displayName": "Account ID(Whatapp-twillo)",
                     "required": true
