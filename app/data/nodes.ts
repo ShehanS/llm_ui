@@ -329,7 +329,7 @@ export const NODE_CATALOG = {
                     "values": [],
                     "name": "accountId",
                     "defaultValue": "",
-                    "value": "",
+                    "value": "AC49a3ad33b96d45dd0f83a4edd48a9a81",
                     "dependOn": "whatapp",
                     "displayName": "Account ID(Whatapp-twillo)",
                     "required": true
@@ -340,7 +340,7 @@ export const NODE_CATALOG = {
                     "name": "token",
                     "defaultValue": "",
                     "dependOn": "whatapp",
-                    "value": "",
+                    "value": "f688ec8fd98fdef7d5eb337580c05235",
                     "displayName": "Token(Whatapp-twillo)",
                     "required": true
                 },
@@ -360,7 +360,7 @@ export const NODE_CATALOG = {
                     "name": "from",
                     "defaultValue": "",
                     "dependOn": "whatapp",
-                    "value": "",
+                    "value": "+14155238886",
                     "displayName": "Whatsapp From(Whatapp-twillo)",
                     "required": true
                 },
@@ -370,7 +370,7 @@ export const NODE_CATALOG = {
                     "name": "path",
                     "defaultValue": "",
                     "dependOn": "whatapp",
-                    "value": "/webhook/{flowId}",
+                    "value": "/whatapp-webhook/{flowId}",
                     "displayName": "Whatsapp Webhook(Whatapp-twillo)",
                     "required": true
                 },
@@ -406,7 +406,8 @@ export const NODE_CATALOG = {
             ]
         },
         "inputs": [
-            {"id": "action", "label": "Action In", "position": "left"}
+            {"id": "action", "label": "Action In", "position": "left"},
+            {"id": "source", "label": "Source In", "position": "left"}
         ],
         "outputs": [
             {"id": "success", "label": "Success", "position": "right"},
@@ -489,6 +490,56 @@ export const NODE_CATALOG = {
         ],
         "outputs": [
             {"id": "success", "label": "Success", "position": "right"}
+        ]
+    },
+    "source.org": {
+        "type": "source.org",
+        "label": "Organization",
+        "color": "#c5ab04",
+        "config": {
+            "icon": "",
+            "inputProps": [
+                {
+                    "type": "OrgDataTable",
+                    "values": [],
+                    "name": "orgSource",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Organization Settings",
+                    "required": true
+                },
+            ]
+        },
+        "inputs": [
+
+        ],
+        "outputs": [
+            {"id": "success", "label": "Source Out", "position": "right"}
+        ]
+    },
+    "general.approval": {
+        "type": "general.approval",
+        "label": "General Approval",
+        "color": "#ffe0e6",
+        "config": {
+            "icon": "",
+            "inputProps": [
+                {
+                    "type": "generalApproval",
+                    "values": [],
+                    "name": "generalApproval",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "General Approval",
+                    "required": true
+                },
+            ]
+        },
+        "inputs": [
+            {"id": "success", "label": "Input", "position": "left"}
+        ],
+        "outputs": [
+            {"id": "success", "label": "Source Out", "position": "right"}
         ]
     }
 };

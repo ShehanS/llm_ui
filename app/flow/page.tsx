@@ -125,7 +125,7 @@ const Page: FC = () => {
     );
 
     const updateNodeConfig = (propName: any, value: any) => {
-            console.log(propName, value)
+
         // setNodes((nds) => nds.map((node) => node.id !== selectedNodeId ? node : {
         //     ...node,
         //     data: {
@@ -159,7 +159,9 @@ const Page: FC = () => {
                                         },
                                     };
                                 }
+                                console.log(p.name, value)
                                 if (p.name === propName) {
+
                                     return {
                                         ...p,
                                         value,

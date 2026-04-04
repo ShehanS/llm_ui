@@ -158,6 +158,7 @@ const RoutingTab = () => {
                             })}>
                                 <option value="openai">OpenAI</option>
                                 <option value="anthropic">Anthropic</option>
+                                <option value="ollama">Ollama</option>
                             </BaseSelect>
                         </div>
                         <div className="space-y-1.5">

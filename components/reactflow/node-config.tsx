@@ -7,6 +7,8 @@ import {cn} from "@/lib/utils";
 import RouteAgentSelector from "@/app/components/route-agent-selector";
 import Approval from "@/components/reactflow/approval";
 import {IInputProp, INode} from "@/app/data/data";
+import OrgDataTable from "@/components/reactflow/org-data-table";
+import {GeneralApproval} from "@/components/reactflow/general-approval";
 
 type Props = {
     node: INode;
@@ -41,7 +43,7 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
                     "fixed top-1/2 -translate-y-1/2 z-50 flex h-10 w-6 items-center justify-center rounded-l-lg border border-r-0 border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white transition-all duration-300 shadow-2xl",
-                    isOpen ? "right-[450px]" : "right-0"
+                    isOpen ? "right-[550px]" : "right-0"
                 )}
             >
                 {isOpen ? <ChevronRight size={16}/> : <ChevronLeft size={16}/>}
@@ -50,7 +52,7 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
             <div
                 className={cn(
                     "fixed right-0 top-0 z-40 h-full border-l border-slate-800 bg-slate-950 transition-all duration-300 ease-in-out shadow-2xl overflow-hidden flex flex-col",
-                    isOpen ? "w-[450px] translate-x-0" : "w-0 translate-x-full"
+                    isOpen ? "w-[550px] translate-x-0" : "w-0 translate-x-full"
                 )}
             >
                 <div className="flex h-16 items-center gap-3 border-b border-slate-800 px-6 shrink-0 bg-slate-950/50 backdrop-blur-sm">
@@ -131,11 +133,25 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
                                                 values={prop.values}
                                             />
                                         );
+                                    case "OrgDataTable":
+                                        return (
+                                            <div key={prop.name}
+                                                 className={cn("space-y-2 transition-all duration-200", isDisabled && "opacity-20 grayscale pointer-events-none")}>
+                                                <label
+                                                    className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
+                                                <div className="relative">
+                                                    <OrgDataTable onChange={onChange} value={prop.value}/>
+                                                </div>
+                                            </div>
+
+                                        );
 
                                     case "mapper":
                                         return (
-                                            <div key={prop.name} className={cn("space-y-3 pt-4 border-t border-slate-800 mt-2", isDisabled && "opacity-20 pointer-events-none")}>
-                                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
+                                            <div key={prop.name}
+                                                 className={cn("space-y-3 pt-4 border-t border-slate-800 mt-2", isDisabled && "opacity-20 pointer-events-none")}>
+                                                <label
+                                                    className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
                                                 <ObjectMapper onChange={onChange} value={prop}/>
                                             </div>
                                         );
@@ -145,6 +161,14 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
                                             <div key={prop.name} className={cn("space-y-2", isDisabled && "opacity-20 pointer-events-none")}>
                                                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
                                                 <RouteAgentSelector onChange={onChange} value={prop}/>
+                                            </div>
+                                        );
+
+                                    case "generalApproval":
+                                        return (
+                                            <div key={prop.name} className={cn("space-y-2", isDisabled && "opacity-20 pointer-events-none")}>
+                                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
+                                                <GeneralApproval/>
                                             </div>
                                         );
 

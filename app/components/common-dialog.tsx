@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Info, XCircle } from "lucide-react";
 import React from "react";
-import { cn } from "@/lib/utils"; // Using the standard shadcn utility
+import { cn } from "@/lib/utils";
 
 type CommonDialogProps = {
     open: boolean;
