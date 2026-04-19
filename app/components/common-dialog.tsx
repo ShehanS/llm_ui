@@ -17,7 +17,7 @@ type CommonDialogProps = {
     open: boolean;
     type: "error" | "info" | "warning";
     title?: string;
-    message: React.ReactNode;
+    children: React.ReactNode;
     code?: string | number;
     fullscreen?: boolean;
     onClose: () => void;
@@ -48,7 +48,7 @@ export const CommonDialog = ({
                                  open,
                                  type,
                                  title,
-                                 message,
+                                 children,
                                  code,
                                  fullscreen = false,
                                  onClose,
@@ -90,7 +90,7 @@ export const CommonDialog = ({
                         fullscreen ? "h-full" : "max-h-[60vh]"
                     )}
                 >
-                    {message}
+                    {children}
                 </div>
 
                 <DialogFooter className={cn(

@@ -9,6 +9,7 @@ import Approval from "@/components/reactflow/approval";
 import {IInputProp, INode} from "@/app/data/data";
 import OrgDataTable from "@/components/reactflow/org-data-table";
 import {GeneralApproval} from "@/components/reactflow/general-approval";
+import LogicController from "@/components/logic-controller";
 
 type Props = {
     node: INode;
@@ -164,11 +165,11 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
                                             </div>
                                         );
 
-                                    case "generalApproval":
+                                    case "logic":
                                         return (
                                             <div key={prop.name} className={cn("space-y-2", isDisabled && "opacity-20 pointer-events-none")}>
                                                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
-                                                <GeneralApproval/>
+                                                <LogicController node={node} onChange={onChange}/>
                                             </div>
                                         );
 

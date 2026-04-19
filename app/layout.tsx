@@ -4,6 +4,8 @@ import "./globals.css";
 import React from "react";
 import Link from "next/link";
 import NavBar from "@/app/components/nav-bar";
+import GlobalDialog from "@/app/components/global-dialog";
+import {ReactFlowProvider} from "@xyflow/react";
 
 
 
@@ -29,12 +31,16 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className="dark">
+        <GlobalDialog/>
+        <ReactFlowProvider>
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+
         <NavBar/>
         <main>{children}</main>
         </body>
+        </ReactFlowProvider>
         </html>
     );
 }

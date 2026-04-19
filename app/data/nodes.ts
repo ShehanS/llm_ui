@@ -329,7 +329,7 @@ export const NODE_CATALOG = {
                     "values": [],
                     "name": "accountId",
                     "defaultValue": "",
-                    "value": "",
+                    "value": "AC49a3ad33b96d45dd0f83a4edd48a9a81",
                     "dependOn": "whatapp",
                     "displayName": "Account ID(Whatapp-twillo)",
                     "required": true
@@ -422,6 +422,16 @@ export const NODE_CATALOG = {
         "config": {
             "icon": "",
             "inputProps": [
+                {
+                    "type": "mapper",
+                    "name": "mapper",
+                    "displayName": "Object Mapper",
+                    "defaultValue": "",
+                    "value": "",
+                    "required": false,
+                    "placeholder": ""
+
+                },
                 {
                     "type": "text",
                     "values": [],
@@ -517,29 +527,40 @@ export const NODE_CATALOG = {
             {"id": "success", "label": "Source Out", "position": "right"}
         ]
     },
-    "general.approval": {
-        "type": "general.approval",
-        "label": "General Approval",
-        "color": "#ffe0e6",
+    "data.extractor": {
+        "type": "data.extractor",
+        "label": "Data Extractor",
+        "color": "#ff8b0a",
         "config": {
             "icon": "",
             "inputProps": [
                 {
-                    "type": "generalApproval",
-                    "values": [],
-                    "name": "generalApproval",
+                    "type": "mapper",
+                    "name": "mapper",
+                    "displayName": "Object Mapper",
                     "defaultValue": "",
                     "value": "",
-                    "displayName": "General Approval",
-                    "required": true
+                    "required": false,
+                    "placeholder": ""
+
                 },
+                {
+                    "type": "logic",
+                    "name": "logic",
+                    "displayName": "Logic Controller",
+                    "defaultValue": "",
+                    "value": "",
+                    "required": false,
+                    "placeholder": ""
+
+                }
             ]
         },
         "inputs": [
             {"id": "success", "label": "Input", "position": "left"}
         ],
         "outputs": [
-            {"id": "success", "label": "Source Out", "position": "right"}
+            {"id": "success", "label": "Output", "position": "right"}
         ]
     }
 };
