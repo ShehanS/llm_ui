@@ -562,5 +562,79 @@ export const NODE_CATALOG = {
         "outputs": [
             {"id": "success", "label": "Output", "position": "right"}
         ]
+    },
+    "database.write": {
+        "type": "database.write",
+        "label": "Database Write",
+        "color": "#301e54",
+        "config": {
+            "icon": "",
+            "inputProps": [
+                {
+                    "type": "select",
+                    "name": "driverType",
+                    "displayName": "Driver Type",
+                    "values": [
+                        { "name": "MySQL", "value": "mysql" },
+                        { "name": "MSSQL", "value": "mssql" }
+                    ],
+                    "defaultValue": "",
+                    "value": "",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "username",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Username",
+                    "required": true
+                },
+                {
+                    "type": "password",
+                    "values": [],
+                    "name": "password",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Password",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "database",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Database",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "host",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Host",
+                    "required": true
+                },
+                {
+                    "type": "mapper",
+                    "name": "mapper",
+                    "displayName": "Object Mapper",
+                    "defaultValue": "",
+                    "value": "",
+                    "required": false,
+                    "placeholder": ""
+
+                }
+            ]
+        },
+        "inputs": [
+            {"id": "success", "label": "Input", "position": "left"}
+        ],
+        "outputs": [
+
+        ]
     }
 };

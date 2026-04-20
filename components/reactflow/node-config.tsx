@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, {useState} from "react";
 import {ObjectMapper} from "@/components/reactflow/object-mapper";
-import {ChevronDown, ChevronLeft, ChevronRight, Info, Settings2, SlidersHorizontal} from "lucide-react";
+import {ChevronDown, ChevronLeft, ChevronRight, Eye, EyeOff, Info, Settings2, SlidersHorizontal} from "lucide-react";
 import {cn} from "@/lib/utils";
 import RouteAgentSelector from "@/app/components/route-agent-selector";
 import Approval from "@/components/reactflow/approval";
@@ -20,6 +20,10 @@ type Props = {
 
 export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOpen}) => {
     const hasProps = !!node?.data?.inputProps?.length;
+    const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
+    const togglePassword = (name: string) => {
+        setVisiblePasswords(prev => ({ ...prev, [name]: !prev[name] }));
+    };
 
     const isPropDisabled = (prop: IInputProp) => {
         if (prop.disabled) return true;
@@ -101,6 +105,30 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
                                                     value={prop.value ?? ""}
                                                     onChange={(e) => onChange(prop.name, e.target.value)}
                                                 />
+                                            </div>
+                                        );
+
+                                    case "password":
+                                        const isVisible = !!visiblePasswords[prop.name];
+                                        return (
+                                            <div key={prop.name} className={cn("space-y-2 transition-all duration-200", isDisabled && "opacity-20 grayscale pointer-events-none")}>
+                                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
+                                                <div className="relative">
+                                                    <input
+                                                        type={isVisible ? "text" : "password"}
+                                                        disabled={isDisabled}
+                                                        className="w-full rounded-md border border-slate-800 bg-slate-900/50 px-3 py-2 pr-10 text-sm text-white placeholder:text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500/40"
+                                                        value={prop.value ?? ""}
+                                                        onChange={(e) => onChange(prop.name, e.target.value)}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => togglePassword(prop.name)}
+                                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                                                    >
+                                                        {isVisible ? <EyeOff size={16} /> : <Eye size={16} />}
+                                                    </button>
+                                                </div>
                                             </div>
                                         );
 

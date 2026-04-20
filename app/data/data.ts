@@ -30,6 +30,7 @@ export interface IRoutingConfig {
     classifierModel: IModelConfig;
     routingPrompt: string;
     fallbackAgent: string;
+    routeName: string;
 }
 
 export interface IMainConfig {
