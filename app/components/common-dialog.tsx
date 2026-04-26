@@ -60,16 +60,21 @@ export const CommonDialog = ({
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent
                 className={cn(
-                    "flex flex-col gap-0 p-0 overflow-hidden transition-all duration-300",
+                    "flex flex-col gap-0 p-0 transition-all duration-300",
                     fullscreen
-                        ? "fixed inset-0 h-screen w-screen max-w-none rounded-none translate-x-0 translate-y-0 left-0 top-0"
-                        : "w-full max-w-2xl h-auto max-h-[90vh] rounded-lg p-6"
+                        ? [
+                            "!fixed !inset-0 !z-50",
+                            "!w-screen !h-screen !max-w-none !max-h-none",
+                            "!m-0 !rounded-none !border-none",
+                            "!translate-x-0 !translate-y-0",
+                            "bg-slate-950"
+                        ]
+                        : "w-[100vw] max-w-2xl h-auto max-h-[90vh] rounded-lg border border-slate-800 shadow-2xl"
                 )}
             >
-                {/* Header padding needs to be manual if we use p-0 for fullscreen */}
                 <DialogHeader className={cn(
-                    "border-b border-slate-800 bg-slate-950/50",
-                    fullscreen ? "p-6" : "pb-4"
+                    "border-b border-slate-800 bg-slate-950/50 shrink-0",
+                    fullscreen ? "p-6" : "p-4"
                 )}>
                     <DialogTitle className={`flex items-center gap-2 ${cfg.color}`}>
                         <Icon className="h-5 w-5" />
@@ -77,16 +82,15 @@ export const CommonDialog = ({
                         {code && <span className="text-sm opacity-70">({code})</span>}
                     </DialogTitle>
 
-                    {/* asChild logic remains to fix hydration */}
                     <DialogDescription asChild>
-                        <div className="hidden">Status for accessibility</div>
+                        <div className="sr-only">Status for accessibility</div>
                     </DialogDescription>
                 </DialogHeader>
 
                 {/* Main Content Area */}
                 <div
                     className={cn(
-                        "flex-1 overflow-auto p-6 scrollbar-thin scrollbar-thumb-slate-700",
+                        "flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-slate-700 bg-slate-950",
                         fullscreen ? "h-full" : "max-h-[60vh]"
                     )}
                 >
@@ -94,8 +98,8 @@ export const CommonDialog = ({
                 </div>
 
                 <DialogFooter className={cn(
-                    "border-t border-slate-800 bg-slate-950/50",
-                    fullscreen ? "p-6" : "pt-4"
+                    "border-t border-slate-800 bg-slate-950/50 shrink-0",
+                    fullscreen ? "p-6" : "p-4"
                 )}>
                     <Button variant={cfg.button} onClick={onClose} className="min-w-[100px]">
                         Close

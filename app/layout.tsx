@@ -2,11 +2,10 @@ import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
 import React from "react";
-import Link from "next/link";
 import NavBar from "@/app/components/nav-bar";
 import GlobalDialog from "@/app/components/global-dialog";
 import {ReactFlowProvider} from "@xyflow/react";
-
+import Auth_provider from "@/app/providers/auth_provider";
 
 
 const geistSans = Geist({
@@ -31,16 +30,17 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className="dark">
-        <GlobalDialog/>
-        <ReactFlowProvider>
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-
-        <NavBar/>
-        <main>{children}</main>
+        <Auth_provider>
+            <GlobalDialog/>
+            <ReactFlowProvider>
+                <NavBar/>
+                <main>{children}</main>
+            </ReactFlowProvider>
+        </Auth_provider>
         </body>
-        </ReactFlowProvider>
         </html>
     );
 }

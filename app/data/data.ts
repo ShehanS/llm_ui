@@ -1,8 +1,14 @@
-export interface ITool {
-    name: string;
-    description: string;
-    type: string;
-    dangerous: boolean;
+export interface IAgentTool {
+    id?: number | null;
+    toolName?: string;
+    toolDisplayName?: string;
+    source?: string;
+    description?: string;
+    type?: string;
+    dangerous?: boolean;
+    agent?: IAgent[]
+    copyFrom?: string | undefined;
+    readOnly?: boolean;
 }
 
 export interface IAgent {
@@ -14,7 +20,8 @@ export interface IAgent {
     isDefault: boolean;
     model: IModelConfig;
     systemPrompt: string;
-    tools: string[];
+    agentTools: IAgentTool[];
+
 }
 
 export interface IModelConfig {
@@ -31,6 +38,7 @@ export interface IRoutingConfig {
     routingPrompt: string;
     fallbackAgent: string;
     routeName: string;
+    agents: IAgent[];
 }
 
 export interface IMainConfig {
@@ -133,4 +141,15 @@ export interface IInputProp {
     value?: ISelectOption[] | any;
     placeholder?: string;
 
+}
+
+export interface ICommonTool {
+    id: string;
+    description?: string;
+    flowId?: string;
+    source?: string;
+    toolName?: string
+    type?: string;
+    toolDisplayName?: string;
+    readOnly?: boolean;
 }

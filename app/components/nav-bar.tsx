@@ -2,6 +2,7 @@
 
 import React, { FC, useState } from "react";
 import Link from "next/link";
+import { signIn, signOut, useSession } from "next-auth/react";
 import {
     NavigationMenu,
     NavigationMenuItem,
@@ -12,13 +13,13 @@ import {
 
 const NavBar: FC = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const { data: session } = useSession();
 
     return (
         <nav className="fixed top-0 z-20 w-full border-b border-border bg-black text-white">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center">
 
-                    {/* Left - Logo */}
                     <Link
                         href="/"
                         className="z-10 text-2xl font-bold hover:text-gray-300 transition-colors"
@@ -26,7 +27,6 @@ const NavBar: FC = () => {
                         TEST FLOW
                     </Link>
 
-                    {/* Center - Menu */}
                     <div className="absolute left-1/2 -translate-x-1/2 hidden md:block">
                         <NavigationMenu>
                             <NavigationMenuList className="flex gap-2">
@@ -62,23 +62,41 @@ const NavBar: FC = () => {
                         </NavigationMenu>
                     </div>
 
-                    {/* Right - Mobile Toggle */}
-                    <div className="ml-auto md:hidden">
-                        <button
-                            onClick={() => setIsOpen(!isOpen)}
-                            className="rounded-md p-2 hover:bg-gray-800"
-                            aria-label="Toggle menu"
-                        >
-                            {isOpen ? "✕" : "☰"}
-                        </button>
+                    <div className="ml-auto flex items-center gap-4">
+                        <div className="hidden md:block">
+                            {session ? (
+                                <button
+                                    onClick={() => signOut({ callbackUrl: "/" })}
+                                    className="text-sm font-medium hover:text-gray-300"
+                                >
+                                    Logout ({session.user?.name})
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => signIn("keycloak")}
+                                    className="text-sm font-medium hover:text-gray-300"
+                                >
+                                    Login
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="md:hidden">
+                            <button
+                                onClick={() => setIsOpen(!isOpen)}
+                                className="rounded-md p-2 hover:bg-gray-800"
+                                aria-label="Toggle menu"
+                            >
+                                {isOpen ? "✕" : "☰"}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Mobile menu */}
             <div
                 className={`md:hidden overflow-hidden transition-all duration-300 ${
-                    isOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                    isOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
                 }`}
             >
                 <div className="space-y-2 px-4 pb-4 pt-2">
@@ -106,6 +124,24 @@ const NavBar: FC = () => {
                     >
                         Flow
                     </Link>
+
+                    <div className="border-t border-gray-800 pt-2">
+                        {session ? (
+                            <button
+                                onClick={() => signOut({ callbackUrl: "/" })}
+                                className="block w-full text-left py-2 hover:text-gray-300"
+                            >
+                                Logout
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => signIn("keycloak")}
+                                className="block w-full text-left py-2 hover:text-gray-300"
+                            >
+                                Login
+                            </button>
+                        )}
+                    </div>
 
                 </div>
             </div>

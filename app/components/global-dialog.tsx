@@ -1,30 +1,29 @@
 "use client";
 
-
-import {CommonDialog} from "@/app/components/common-dialog";
-import {useDialogDataStore} from "@/app/store/dialog_data_store";
+import { CommonDialog } from "@/app/components/common-dialog";
+import { useDialogDataStore } from "@/app/store/dialog_data_store";
 
 const GlobalDialog = () => {
-    const {
-        isOpenDialog,
-        type,
-        title,
-        children,
-        code,
-        fullscreen,
-        closeCommonDialog,
-    } = useDialogDataStore();
+    const { dialogs, closeDialog } = useDialogDataStore();
 
     return (
-        <CommonDialog
-            open={isOpenDialog}
-            type={type}
-            title={title}
-            children={children}
-            code={"1"}
-            fullscreen={fullscreen}
-            onClose={closeCommonDialog}
-        />
+        <>
+            {dialogs.map((dialog, index) => (
+                <CommonDialog
+                    key={dialog.id}
+                    open={true}
+                    type={dialog.type}
+                    title={dialog.title}
+                    fullscreen={dialog.fullscreen ?? false}
+                    onClose={() => closeDialog(dialog.id)}
+                    style={{
+                        zIndex: 1000 + index, // stack dialogs properly
+                    }}
+                >
+                    {dialog.children}
+                </CommonDialog>
+            ))}
+        </>
     );
 };
 

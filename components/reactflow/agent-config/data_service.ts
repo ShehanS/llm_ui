@@ -1,15 +1,15 @@
 "use client";
 
-import { create } from "zustand";
+import {create} from "zustand";
 import * as api from "./api";
-import { IAgent, IRoutingConfig, ITool } from "@/app/data/data";
-import {toggleToolDanger} from "@/app/settings/api";
+import {IAgent, IAgentTool, IRoutingConfig} from "@/app/data/data";
+import {copyComonTool, toggleToolDanger} from "@/app/settings/api";
 
 interface ConfigStore {
     loading: boolean;
     error: string | null;
     agents: IAgent[];
-    tools: ITool[];
+    agentTools: IAgentTool[];
     routingConfig: IRoutingConfig | null;
     routingConfigs: IRoutingConfig[];
     currentRouteName: string;
@@ -30,29 +30,31 @@ interface ConfigStore {
     deleteTool: (id: number) => Promise<void>;
     toggleDanger: (toolName: string, currentStatus: boolean) => Promise<void>;
 
-    // Updated: Accept string toolName instead of toolId
+
     assignTool: (agentId: number, toolName: string) => Promise<void>;
-    unlinkTool: (agentId: number, toolName: string) => Promise<void>;
+    unlinkTool: (agentId: number, toolName: string | undefined) => Promise<void>;
 
     assignAgentToRoute: (routeId: number, agentId: number) => Promise<void>;
     removeAgentFromRoute: (routeId: number, agentId: number) => Promise<void>;
 
     pushToAI: () => Promise<void>;
+
+    copyTool: (tool: IAgentTool) => Promise<void>;
 }
 
 export const useConfigStore = create<ConfigStore>((set, get) => ({
     loading: false,
     error: null,
     agents: [],
-    tools: [],
+    agentTools: [],
     routingConfig: null,
     routingConfigs: [],
     currentRouteName: "test",
 
     fetchInitialData: async (routeName: string) => {
-        set({ loading: true, error: null, currentRouteName: routeName });
+        set({loading: true, error: null, currentRouteName: routeName});
         try {
-            const [agents, tools, routingConfigs] = await Promise.all([
+            const [agents, agentTools, routingConfigs] = await Promise.all([
                 api.getAllAgents(),
                 api.getAllTools(),
                 api.getRoutingConfigs(),
@@ -60,7 +62,7 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
 
             set({
                 agents: agents || [],
-                tools: tools || [],
+                agentTools: agentTools || [],
                 routingConfigs: routingConfigs || [],
                 loading: false
             });
@@ -220,12 +222,22 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
         try {
             await toggleToolDanger(toolName, newStatus);
             set({
-                tools: get().tools.map(t =>
-                    t.name === toolName ? { ...t, dangerous: newStatus } : t
+                tools: get().agentTools.map(t =>
+                    t.toolName === toolName ? {...t, dangerous: newStatus} : t
                 )
             });
         } catch (e: any) {
-            set({ error: e.message });
+            set({error: e.message});
         }
     },
+    copyTool: async (tool: IAgentTool) => {
+        set({loading: true});
+        try {
+            await copyComonTool(tool);
+            await get().fetchInitialData();
+            set({loading: false});
+        } catch (e: any) {
+            set({error: e.message, loading: false});
+        }
+    }
 }));

@@ -275,7 +275,7 @@ const Page: FC = () => {
             <div className="flex-1 flex flex-col relative overflow-hidden transition-all duration-300 ease-in-out bg-slate-900/50" style={{ marginLeft: leftOpen ? "260px" : "0px", marginRight: rightOpen ? "320px" : "0px" }}>
 
                 <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50 flex gap-2 bg-slate-900/95 p-2 rounded-xl border border-slate-700 backdrop-blur-md shadow-2xl">
-                    <Button onClick={() => openCommonDialog({ type: "info", fullscreen: false, title: "Code Editor", children: <CodeEditor/>, code: 500 })}>
+                    <Button onClick={() => openCommonDialog({ type: "info", fullscreen: false, title: "Code Editor", children: <CodeEditor/>, source: 500 })}>
                         Open Dialog
                     </Button>
 
@@ -325,7 +325,6 @@ const Page: FC = () => {
                     </ReactFlow>
                 </div>
 
-                {/* Debug Panel Section stays same... */}
                 {debugDetails && traceConnected && (
                     <div className={cn("absolute bottom-4 left-4 right-4 bg-slate-950 border border-slate-800 rounded-xl z-[60] transition-all duration-300 shadow-2xl overflow-hidden flex flex-col", isPanelExpanded ? 'h-[70vh]' : 'h-10')}>
                         <div className="flex items-center justify-between px-4 h-10 bg-slate-900 border-b border-slate-800 cursor-pointer shrink-0" onClick={() => setIsPanelExpanded(!isPanelExpanded)}>
@@ -340,7 +339,6 @@ const Page: FC = () => {
                         </div>
                         {isPanelExpanded && (
                             <div className="flex-1 flex flex-col min-h-0 bg-slate-950 p-4">
-                                {/* Trace details rendering logic... */}
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                                     <section className="flex flex-col space-y-2">
                                         <div className="flex items-center gap-2"><div className="w-1 h-3 bg-amber-500 rounded-full"/><span className="text-[10px] text-amber-400 font-bold uppercase">Configuration</span></div>

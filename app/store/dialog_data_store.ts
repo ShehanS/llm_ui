@@ -3,59 +3,43 @@ import React from "react";
 
 type DialogType = "error" | "info" | "warning";
 
-interface DialogDataStore {
-    loading: boolean;
-    isOpenDialog: boolean;
-    error: any | null;
-
-
+interface Dialog {
+    id: string;
     type: DialogType;
     title: string;
-    message: React.ReactNode;
+    children: React.ReactNode;
     code?: string | number;
-    fullscreen: boolean;
+    fullscreen?: boolean;
+}
 
-
-    openCommonDialog: (data: {
-        type: DialogType;
-        title: string;
-        children: React.ReactNode;
-        code?: string | number;
-        fullscreen?: boolean;
-    }) => void;
-
-    closeCommonDialog: () => void;
+interface DialogDataStore {
+    dialogs: Dialog[];
+    openDialog: (data: Omit<Dialog, "id">) => void;
+    closeDialog: (id: string) => void;
+    closeAllDialogs: () => void;
 }
 
 export const useDialogDataStore = create<DialogDataStore>((set) => ({
-    loading: false,
-    isOpenDialog: false,
-    error: null,
+    dialogs: [],
 
-    type: "info",
-    title: "",
-    message: null,
-    code: undefined,
-    fullscreen: false,
+    openDialog: (data) => {
+        const id = crypto.randomUUID();
 
-    openCommonDialog: (data) => {
-        set({
-            isOpenDialog: true,
-            type: data.type || "info",
-            title: data.title,
-            children: data.children,
-            code: data.code,
-            fullscreen: data.fullscreen ?? false,
-        });
+        set((state) => ({
+            dialogs: [
+                ...state.dialogs,
+                { id, ...data }
+            ],
+        }));
     },
 
-    closeCommonDialog: () => {
-        set({
-            isOpenDialog: false,
-            title: "",
-            children: null,
-            code: undefined,
-            fullscreen: false,
-        });
+    closeDialog: (id) => {
+        set((state) => ({
+            dialogs: state.dialogs.filter(d => d.id !== id),
+        }));
+    },
+
+    closeAllDialogs: () => {
+        set({ dialogs: [] });
     },
 }));
