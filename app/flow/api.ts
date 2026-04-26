@@ -1,5 +1,6 @@
 import { getSession } from "next-auth/react";
 import { IExecutionTrace, IResponseMessage, IWorkflow } from "../data/data";
+import {authenticatedFetch} from "@/app/api/fetch/fetch_client";
 
 const API_BASE = "http://localhost:9095/api/workflow";
 const WS_BASE = "ws://localhost:9095/api/workflow/ws/trace";
@@ -12,7 +13,7 @@ async function getAuthHeaders(existingHeaders: Record<string, string> = {}): Pro
 }
 
 export async function saveWorkflow(workflow: IWorkflow): Promise<any> {
-    const res = await fetch(`${API_BASE}/save`, {
+    const res = await authenticatedFetch(`${API_BASE}/save`, {
         method: "POST",
         cache: "no-store",
         headers: await getAuthHeaders({ "Content-Type": "application/json" }),
@@ -23,7 +24,7 @@ export async function saveWorkflow(workflow: IWorkflow): Promise<any> {
 }
 
 export async function openWorkflow(id: string): Promise<IWorkflow> {
-    const res = await fetch(`${API_BASE}/open/${id}`, {
+    const res = await authenticatedFetch(`${API_BASE}/open/${id}`, {
         cache: "no-store",
         headers: await getAuthHeaders(),
     });
@@ -33,7 +34,7 @@ export async function openWorkflow(id: string): Promise<IWorkflow> {
 }
 
 export async function openWorkflows(): Promise<IWorkflow[]> {
-    const res = await fetch(`${API_BASE}/open/all`, {
+    const res = await authenticatedFetch(`${API_BASE}/open/all`, {
         cache: "no-store",
         headers: await getAuthHeaders(),
     });

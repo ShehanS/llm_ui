@@ -6,6 +6,7 @@ import NavBar from "@/app/components/nav-bar";
 import GlobalDialog from "@/app/components/global-dialog";
 import {ReactFlowProvider} from "@xyflow/react";
 import Auth_provider from "@/app/providers/auth_provider";
+import AuthProvider from "@/app/providers/auth_provider";
 
 
 const geistSans = Geist({
@@ -33,13 +34,13 @@ export default function RootLayout({
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-        <Auth_provider>
+        <AuthProvider>
             <GlobalDialog/>
             <ReactFlowProvider>
                 <NavBar/>
                 <main>{children}</main>
             </ReactFlowProvider>
-        </Auth_provider>
+        </AuthProvider>
         </body>
         </html>
     );

@@ -247,7 +247,7 @@ const CreateToolForm = ({ onSuccess }: { onSuccess: () => void }) => {
 const CreateRoutingForm = ({ onSuccess, initialData }: { onSuccess: () => void, initialData?: any }) => {
     const { createNewRouting, loading, fetchInitialData, agents } = useConfigStore();
     const [form, setForm] = useState({
-        id: initialData?.id || null, // Track ID for update support
+        id: initialData?.id || null,
         routeName: initialData?.routeName || '',
         classifierModel: initialData?.classifierModel || {
             provider: 'openai',
@@ -263,7 +263,6 @@ const CreateRoutingForm = ({ onSuccess, initialData }: { onSuccess: () => void, 
 
     const handleSave = async () => {
         if (form.routeName) {
-            // Sends the form including the ID (if present) to the addRoutingAgent API
             await createNewRouting(form as any);
             await fetchInitialData();
             onSuccess();
@@ -298,8 +297,8 @@ const CreateRoutingForm = ({ onSuccess, initialData }: { onSuccess: () => void, 
                 </div>
             </div>
 
-            {/* Service Config */}
             <div className="bg-slate-900/50 p-3 rounded-lg border border-slate-800 space-y-3">
+                <label className="text-[10px] text-emerald-400 uppercase font-bold block">Service Configuration</label>
                 <div className={cn("grid gap-2", form.serviceType === 'LOCAL' ? "grid-cols-2" : "grid-cols-1")}>
                     <div className="space-y-1">
                         <label className="text-[9px] text-slate-500 uppercase font-bold ml-1">Service Type</label>
@@ -325,8 +324,8 @@ const CreateRoutingForm = ({ onSuccess, initialData }: { onSuccess: () => void, 
                 </div>
             </div>
 
-            {/* Classifier Config */}
             <div className="bg-slate-900/50 p-3 rounded-lg border border-slate-800 space-y-3">
+                <label className="text-[10px] text-blue-400 uppercase font-bold block">Classifier Configuration</label>
                 <div className="grid grid-cols-3 gap-2">
                     <div className="space-y-1">
                         <label className="text-[9px] text-slate-500 uppercase font-bold ml-1">Provider</label>
@@ -353,6 +352,17 @@ const CreateRoutingForm = ({ onSuccess, initialData }: { onSuccess: () => void, 
                             onChange={e => setForm({ ...form, classifierModel: { ...form.classifierModel, temperature: parseFloat(e.target.value) }})}
                         />
                     </div>
+                </div>
+                {/* Added Missing API Key Input */}
+                <div className="space-y-1">
+                    <label className="text-[9px] text-slate-500 uppercase font-bold ml-1">API Key</label>
+                    <input
+                        type="password"
+                        className="w-full bg-slate-950 border border-slate-800 p-2 text-xs rounded-md text-white outline-none focus:border-blue-500"
+                        value={form.classifierModel.apiKey || ''}
+                        onChange={e => setForm({ ...form, classifierModel: { ...form.classifierModel, apiKey: e.target.value }})}
+                        placeholder="Enter API Key"
+                    />
                 </div>
             </div>
 

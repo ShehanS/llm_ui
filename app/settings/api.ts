@@ -2,6 +2,7 @@
 
 import {getSession} from "next-auth/react";
 import {IAgent, IAgentTool, ICommonTool, IResponseMessage, ITool} from "../data/data";
+import {authenticatedFetch} from "@/app/api/fetch/fetch_client";
 
 const API_BASE = "http://localhost:9095/api/config";
 
@@ -26,7 +27,7 @@ export async function uploadPlugin(file: File): Promise<ITool> {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await fetch(`${API_BASE}/tool/install`, {
+    const res = await authenticatedFetch(`${API_BASE}/tool/install`, {
         method: "POST",
         body: formData,
         headers,
@@ -42,7 +43,7 @@ export async function uploadPlugin(file: File): Promise<ITool> {
 export async function fetchPlugins(): Promise<ITool[]> {
     const headers = await getAuthHeaders();
 
-    const res = await fetch(`${API_BASE}/tool/all`, {
+    const res = await authenticatedFetch(`${API_BASE}/tool/all`, {
         headers,
         cache: "no-store",
     });
@@ -56,7 +57,7 @@ export async function fetchPlugins(): Promise<ITool[]> {
 export async function fetchCommonTools(): Promise<ICommonTool[]> {
     const headers = await getAuthHeaders();
 
-    const res = await fetch(`${API_BASE}/common-tools`, {
+    const res = await authenticatedFetch(`${API_BASE}/common-tools`, {
         headers,
         cache: "no-store",
     });
@@ -70,7 +71,7 @@ export async function fetchCommonTools(): Promise<ICommonTool[]> {
 export async function fetchPlugin(id: string): Promise<ITool> {
     const headers = await getAuthHeaders();
 
-    const res = await fetch(`${API_BASE}/tool/${id}`, {
+    const res = await authenticatedFetch(`${API_BASE}/tool/${id}`, {
         headers,
         cache: "no-store",
     });
@@ -84,7 +85,7 @@ export async function fetchPlugin(id: string): Promise<ITool> {
 export async function fetchAgents(): Promise<IAgent[]> {
     const headers = await getAuthHeaders();
 
-    const res = await fetch(`${API_BASE}/agents/all`, {
+    const res = await authenticatedFetch(`${API_BASE}/agents/all`, {
         headers,
         cache: "no-cache",
     });
@@ -99,7 +100,7 @@ export async function toggleToolDanger(toolName: string, isDangerous: boolean): 
     const headers = await getAuthHeaders();
     const url = `${API_BASE}/tools/${toolName}/mark-dangerous?dangerous=${isDangerous}`;
 
-    const res = await fetch(url, {
+    const res = await authenticatedFetch(url, {
         method: "POST",
         headers,
     });
@@ -111,7 +112,7 @@ export async function copyComonTool(tool: IAgentTool): Promise<void> {
     const headers = await getAuthHeaders();
     const url = `${API_BASE}/tools/copy`;
 
-    const res = await fetch(url, {
+    const res = await authenticatedFetch(url, {
         method: "POST",
         headers,
         body: JSON.stringify(tool),
