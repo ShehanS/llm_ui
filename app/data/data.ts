@@ -1,6 +1,6 @@
 export interface IAgentTool {
     id?: number | null;
-    toolName?: string;
+    toolName: string;
     toolDisplayName?: string;
     source?: string;
     description?: string;

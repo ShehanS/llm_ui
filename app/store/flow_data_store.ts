@@ -28,8 +28,8 @@ interface WorkflowStore {
     clear: () => void;
 }
 
-let closeTrace: (() => void) | null = null;
 let traceController: { close: () => void } | null = null;
+
 export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
     loading: false,
     error: null,
@@ -89,15 +89,19 @@ export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
         }
     },
 
-    startLiveTrace: (runId: string) => {
-        if (traceController) {
-            traceController.close();
+    startLiveTrace: async (runId: string) => {
+        if (traceController && typeof traceController.close === 'function') {
+            try {
+                traceController.close();
+            } catch (e) {
+                console.warn("Failed to close existing trace controller", e);
+            }
             traceController = null;
         }
 
-        set({ traces: [], traceConnected: false });
+        set({traces: [], traceConnected: false});
 
-        traceController = openWorkflowTraceWS(
+        const controller = openWorkflowTraceWS(
             runId,
             (trace: IExecutionTrace) => {
                 set((state) => ({
@@ -105,22 +109,34 @@ export const useWorkflowStore = create<WorkflowStore>((set, get) => ({
                     traceConnected: true
                 }));
             },
-            () => set({ traceConnected: false }),
-            () => set({ traceConnected: false })
+            () => set({traceConnected: false}),
+            () => set({traceConnected: false})
         );
+
+        if (controller) {
+            traceController = await controller;
+        }
     },
 
     stopLiveTrace: () => {
-        if (traceController) {
-            traceController.close();
+        if (traceController && typeof traceController.close === 'function') {
+            try {
+                traceController.close();
+            } catch (e) {
+                console.warn("Failed to close trace controller", e);
+            }
             traceController = null;
         }
         set({ traceConnected: false });
     },
 
     clear: () => {
-        if (traceController) {
-            traceController.close();
+        if (traceController && typeof traceController.close === 'function') {
+            try {
+                traceController.close();
+            } catch (e) {
+                console.warn("Failed to close trace controller during clear", e);
+            }
             traceController = null;
         }
         set({ traces: [], traceConnected: false, workflow: null });

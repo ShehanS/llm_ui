@@ -31,11 +31,11 @@ interface ConfigStore {
     toggleDanger: (toolName: string, currentStatus: boolean) => Promise<void>;
 
 
-    assignTool: (agentId: number, toolName: string) => Promise<void>;
-    unlinkTool: (agentId: number, toolName: string | undefined) => Promise<void>;
+    assignTool: (agentId: number, toolName: string, routeAgent: string) => Promise<void>;
+    unlinkTool: (agentId: number, toolName: string, routeAgent: string) => Promise<void>;
 
-    assignAgentToRoute: (routeId: number, agentId: number) => Promise<void>;
-    removeAgentFromRoute: (routeId: number, agentId: number) => Promise<void>;
+    assignAgentToRoute: (routeId: number, agentId: number, routeAgent: string) => Promise<void>;
+    removeAgentFromRoute: (routeId: number, agentId: number, routeAgent: string) => Promise<void>;
 
     pushToAI: () => Promise<void>;
 
@@ -161,49 +161,59 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
 
     deleteTool: async (id) => {
         if (!confirm("Delete tool?")) return;
-        set({ loading: true });
+        set({loading: true});
         try {
             await api.deleteTool(id);
             await get().fetchInitialData(get().currentRouteName);
-        } catch (e: any) { set({ error: e.message, loading: false }); }
+        } catch (e: any) {
+            set({error: e.message, loading: false});
+        }
     },
 
-    assignTool: async (agentId, toolName) => {
-        set({ loading: true });
+    assignTool: async (agentId, toolName, routeAgent) => {
+        set({loading: true});
         try {
-            await api.linkToolToAgent(agentId, toolName);
+            await api.linkToolToAgent(agentId, toolName, routeAgent);
             await get().fetchInitialData(get().currentRouteName);
-        } catch (e: any) { set({ error: e.message, loading: false }); }
+        } catch (e: any) {
+            set({error: e.message, loading: false});
+        }
     },
 
-    unlinkTool: async (agentId, toolName) => {
-        set({ loading: true });
+    unlinkTool: async (agentId, toolName, routeAgent) => {
+        set({loading: true});
         try {
-            await api.unlinkToolFromAgent(agentId, toolName);
+            await api.unlinkToolFromAgent(agentId, toolName, routeAgent);
             await get().fetchInitialData(get().currentRouteName);
-        } catch (e: any) { set({ error: e.message, loading: false }); }
+        } catch (e: any) {
+            set({error: e.message, loading: false});
+        }
     },
 
-    assignAgentToRoute: async (routeId, agentId) => {
-        set({ loading: true });
+    assignAgentToRoute: async (routeId, agentId, routeAgent) => {
+        set({loading: true});
         try {
-            await api.linkAgentToRoute(routeId, agentId);
+            await api.linkAgentToRoute(routeId, agentId, routeAgent);
             if (get().routingConfig?.id === routeId) {
                 await get().fetchRoutingConfig(get().currentRouteName);
             }
-            set({ loading: false });
-        } catch (e: any) { set({ error: e.message, loading: false }); }
+            set({loading: false});
+        } catch (e: any) {
+            set({error: e.message, loading: false});
+        }
     },
 
-    removeAgentFromRoute: async (routeId, agentId) => {
-        set({ loading: true });
+    removeAgentFromRoute: async (routeId, agentId, routeAgent) => {
+        set({loading: true});
         try {
-            await api.unlinkAgentFromRoute(routeId, agentId);
+            await api.unlinkAgentFromRoute(routeId, agentId, routeAgent);
             if (get().routingConfig?.id === routeId) {
                 await get().fetchRoutingConfig(get().currentRouteName);
             }
-            set({ loading: false });
-        } catch (e: any) { set({ error: e.message, loading: false }); }
+            set({loading: false});
+        } catch (e: any) {
+            set({error: e.message, loading: false});
+        }
     },
 
     pushToAI: async () => {

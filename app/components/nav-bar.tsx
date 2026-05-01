@@ -15,6 +15,18 @@ const NavBar: FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { data: session } = useSession();
 
+    const handleLogout = async () => {
+        await signOut({ redirect: false });
+
+        const issuer = process.env.NEXT_PUBLIC_KEYCLOAK_ISSUER;
+        const clientId = process.env.NEXT_PUBLIC_KEYCLOAK_ID;
+        const redirectUri = window.location.origin;
+
+        if (issuer && clientId) {
+            const url = `${issuer}/protocol/openid-connect/logout?client_id=${clientId}&post_logout_redirect_uri=${encodeURIComponent(redirectUri)}`;
+            window.location.replace(url);
+        }
+    };
     return (
         <nav className="fixed top-0 z-20 w-full border-b border-border bg-black text-white">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -65,19 +77,11 @@ const NavBar: FC = () => {
                     <div className="ml-auto flex items-center gap-4">
                         <div className="hidden md:block">
                             {session ? (
-                                <button
-                                    onClick={() => signOut({ callbackUrl: "/" })}
-                                    className="text-sm font-medium hover:text-gray-300"
-                                >
-                                    Logout ({session.user?.name})
+                                <button onClick={handleLogout} className="text-sm font-medium hover:text-gray-300">
+                                    Logout ({session.user?.name || "User"})
                                 </button>
                             ) : (
-                                <button
-                                    onClick={() => signIn("keycloak")}
-                                    className="text-sm font-medium hover:text-gray-300"
-                                >
-                                    Login
-                                </button>
+                                <Link href="/signin" className="text-sm font-medium hover:text-gray-300">Login</Link>
                             )}
                         </div>
 

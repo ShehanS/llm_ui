@@ -1,7 +1,7 @@
 "use client";
 
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useConfigStore } from "@/components/reactflow/agent-config/data_service";
+import React, {FC, useEffect, useRef, useState} from "react";
+import {useConfigStore} from "@/components/reactflow/agent-config/data_service";
 import {
     Badge,
     Bot,
@@ -10,25 +10,24 @@ import {
     ChevronDown,
     Code2,
     Database,
+    Edit2,
     File,
     GitBranch,
     Loader,
     Loader2,
     Save,
-    Terminal,
-    Trash2,
-    UserPlus,
-    Wrench,
-    X,
     ShieldAlert,
     ShieldCheck,
-    Edit2
+    Terminal,
+    Trash2,
+    Wrench,
+    X
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useDialogDataStore } from "@/app/store/dialog_data_store";
+import {cn} from "@/lib/utils";
+import {useDialogDataStore} from "@/app/store/dialog_data_store";
 import Editor from "@monaco-editor/react";
-import { useSettingsStore } from "@/app/settings/data_service";
-import { Button } from "@/components/ui/button";
+import {useSettingsStore} from "@/app/settings/data_service";
+import {Button} from "@/components/ui/button";
 import {IAgentTool} from "@/app/data/data";
 
 const DEFAULT_MOCK_CODE = `async function getMetadata() {
@@ -545,7 +544,7 @@ const RouteAgentSelector: FC<{ value: any, onChange: (name: string, value: any) 
     const { routingConfigs, agents, agentTools, fetchInitialData, assignAgentToRoute, removeAgentFromRoute, assignTool, unlinkTool, deleteRoutingConfig, deleteAgent, loading } = useConfigStore();
     const { openDialog, closeDialog, id } = useDialogDataStore();
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedRouteName, setSelectedRouteName] = useState(value?.value ?? value ?? "");
+    const [selectedRouteName, setSelectedRouteName] = useState<string>(value?.value ?? value ?? "");
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -567,6 +566,7 @@ const RouteAgentSelector: FC<{ value: any, onChange: (name: string, value: any) 
         await fetchInitialData();
     };
 
+
     return (
         <div className="relative w-full" ref={containerRef}>
             <label className="text-[10px] font-bold uppercase text-slate-500 ml-1 mb-2 block">Intelligence Strategy</label>
@@ -585,23 +585,70 @@ const RouteAgentSelector: FC<{ value: any, onChange: (name: string, value: any) 
                         {routingConfigs?.map((route) => (
                             <div key={route.id} className={cn("m-2 p-4 rounded-xl border border-transparent hover:bg-slate-900/40", selectedRouteName === route.routeName && "bg-blue-600/5 border-blue-500/20")}>
                                 <div className="flex items-center justify-between mb-4">
-                                    <div className="flex flex-col"><span className="text-xs font-bold text-white flex items-center gap-2"><GitBranch size={14} className="text-blue-400" /> {route.routeName}</span><span className="text-[8px] text-slate-600">ID: {route.id}</span></div>
+                                    <div className="flex flex-col"><span
+                                        className="text-xs font-bold text-white flex items-center gap-2"><GitBranch
+                                        size={14} className="text-blue-400"/> {route.routeName}</span><span
+                                        className="text-[8px] text-slate-600">ID: {route.id}</span></div>
                                     <div className="flex items-center gap-1.5">
-                                        <button type="button" onClick={(e) => { e.stopPropagation(); openDialog({ type: "info", title: "Edit Strategy", children: <CreateRoutingForm initialData={route} onSuccess={() => { closeDialog(id); fetchInitialData(); }} /> }); }} className="p-1 text-blue-400 hover:text-blue-300"><Edit2 size={13} /></button>
-                                        <button type="button" onClick={(e) => { e.stopPropagation(); if (confirm(`Delete strategy?`)) runAction(() => deleteRoutingConfig(route.id!)); }} className="p-1 text-slate-600 hover:text-red-500"><Trash2 size={13} /></button>
-                                        <button type="button" onClick={() => { setSelectedRouteName(route.routeName); onChange("routeAgent", route.routeName); setIsOpen(false); }} className={cn("text-[10px] font-bold px-3 py-1.5 rounded-lg border", selectedRouteName === route.routeName ? "bg-emerald-600 text-white" : "text-slate-400")}>{selectedRouteName === route.routeName ? <CheckCircle2 size={12} /> : "SELECT"}</button>
+                                        <button type="button" onClick={(e) => {
+                                            e.stopPropagation();
+                                            openDialog({
+                                                type: "info",
+                                                title: "Edit Strategy",
+                                                children: <CreateRoutingForm initialData={route} onSuccess={() => {
+                                                    closeDialog(id);
+                                                    fetchInitialData();
+                                                }}/>
+                                            });
+                                        }} className="p-1 text-blue-400 hover:text-blue-300"><Edit2 size={13}/></button>
+                                        <button type="button" onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (confirm(`Delete strategy?`)) runAction(() => deleteRoutingConfig(route.id!));
+                                        }} className="p-1 text-slate-600 hover:text-red-500"><Trash2 size={13}/>
+                                        </button>
+                                        <button type="button" onClick={() => {
+                                            setSelectedRouteName(route.routeName);
+                                            onChange("routeAgent", route.routeName);
+                                            setIsOpen(false);
+                                        }}
+                                                className={cn("text-[10px] font-bold px-3 py-1.5 rounded-lg border", selectedRouteName === route.routeName ? "bg-emerald-600 text-white" : "text-slate-400")}>{selectedRouteName === route.routeName ?
+                                            <CheckCircle2 size={12}/> : "SELECT"}</button>
                                     </div>
                                 </div>
                                 <div className="space-y-3 pl-3 border-l-2 border-slate-800/50">
-                                    <div className="flex items-center justify-between"><span className="text-[9px] font-bold text-slate-500 uppercase">Fleet</span><select className="bg-slate-800 text-[9px] text-blue-400 rounded px-2" onChange={(e) => e.target.value && runAction(() => assignAgentToRoute(route.id, Number(e.target.value)))} value=""><option value="">+ Link</option>{agents?.filter(a => !route.agents?.some((ra: any) => ra.id === a.id)).map(a => <option key={a.id} value={a.id!}>{a.displayName}</option>)}</select></div>
+                                    <div className="flex items-center justify-between"><span
+                                        className="text-[9px] font-bold text-slate-500 uppercase">Fleet</span><select
+                                        className="bg-slate-800 text-[9px] text-blue-400 rounded px-2"
+                                        onChange={(e) => e.target.value && runAction(() => assignAgentToRoute(route.id, Number(e.target.value), selectedRouteName))}
+                                        value="">
+                                        <option value="">+ Link</option>
+                                        {agents?.filter(a => !route.agents?.some((ra: any) => ra.id === a.id)).map(a =>
+                                            <option key={a.id} value={a.id!}>{a.displayName}</option>)}</select></div>
                                     {route.agents?.map((agent: any) => (
                                         <div key={agent.id} className="bg-slate-900/60 p-3 rounded-lg space-y-2">
                                             <div className="flex items-center justify-between">
-                                                <span className="text-[10px] text-slate-200 flex items-center gap-2"><Bot size={12} className="text-blue-400" /> {agent.displayName}</span>
+                                                <span
+                                                    className="text-[10px] text-slate-200 flex items-center gap-2"><Bot
+                                                    size={12} className="text-blue-400"/> {agent.displayName}</span>
                                                 <div className="flex items-center gap-2">
-                                                    <button onClick={() => openDialog({ type: "info", title: "Edit Agent", children: <CreateAgentForm initialData={agent} onSuccess={() => { closeDialog(id); fetchInitialData(); }} /> })} className="text-blue-400 hover:text-blue-300"><Edit2 size={11} /></button>
-                                                    <button onClick={() => { if(confirm(`Delete agent ${agent.agentName}?`)) runAction(() => deleteAgent(agent.id!)); }} className="text-slate-600 hover:text-red-500"><Trash2 size={11} /></button>
-                                                    <button onClick={() => runAction(() => removeAgentFromRoute(route.id, agent.id))} className="text-slate-600 hover:text-amber-500 ml-2" title="Unlink from Route"><X size={11} /></button>
+                                                    <button onClick={() => openDialog({
+                                                        type: "info",
+                                                        title: "Edit Agent",
+                                                        children: <CreateAgentForm initialData={agent}
+                                                                                   onSuccess={() => {
+                                                                                       closeDialog(id);
+                                                                                       fetchInitialData();
+                                                                                   }}/>
+                                                    })} className="text-blue-400 hover:text-blue-300"><Edit2 size={11}/>
+                                                    </button>
+                                                    <button onClick={() => {
+                                                        if (confirm(`Delete agent ${agent.agentName}?`)) runAction(() => deleteAgent(agent.id!));
+                                                    }} className="text-slate-600 hover:text-red-500"><Trash2 size={11}/>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => runAction(() => removeAgentFromRoute(route.id, agent.id, selectedRouteName))}
+                                                        className="text-slate-600 hover:text-amber-500 ml-2"
+                                                        title="Unlink from Route"><X size={11}/></button>
                                                 </div>
                                             </div>
                                             <div className="flex flex-wrap gap-1">
@@ -610,14 +657,22 @@ const RouteAgentSelector: FC<{ value: any, onChange: (name: string, value: any) 
                                                     <span key={t.toolName} className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 text-[11px] font-bold text-emerald-400 border border-emerald-500/30 rounded uppercase tracking-wide shadow-sm">
                                                         {t.toolDisplayName}
                                                         <button
-                                                            onClick={() => runAction(() => unlinkTool(agent.id, t.toolName))}
+                                                            onClick={() => runAction(() => unlinkTool(agent.id, t.toolName, selectedRouteName))}
                                                             className="hover:text-red-400 transition-colors"
                                                         >
                                                             <X size={11} strokeWidth={3} />
                                                         </button>
                                                     </span>
                                                 ))}
-                                                <select className="bg-transparent text-[10px] font-semibold text-slate-500 hover:text-blue-400 outline-none cursor-pointer" onChange={(e) => e.target.value && runAction(() => assignTool(agent.id, e.target.value))} value=""><option value="">+ Tool</option>{agentTools?.filter(t => !agent.tools?.some((at: any) => at.toolName === t.toolName)).map(t => <option key={t.toolName} value={t.toolName!}>{t.toolDisplayName}</option>)}</select>
+                                                <select
+                                                    className="bg-transparent text-[10px] font-semibold text-slate-500 hover:text-blue-400 outline-none cursor-pointer"
+                                                    onChange={(e) => e.target.value && runAction(() => assignTool(agent.id, e.target.value, selectedRouteName))}
+                                                    value="">
+                                                    <option value="">+ Tool</option>
+                                                    {agentTools?.filter(t => !agent.tools?.some((at: any) => at.toolName === t.toolName)).map(t =>
+                                                        <option key={t.toolName}
+                                                                value={t.toolName!}>{t.toolDisplayName}</option>)}
+                                                </select>
                                             </div>
                                         </div>
                                     ))}

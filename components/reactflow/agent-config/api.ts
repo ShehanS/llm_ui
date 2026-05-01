@@ -1,6 +1,6 @@
 "use client";
 
-import { getSession } from "next-auth/react";
+import {getSession} from "next-auth/react";
 import {IAgent, IAgentTool, IMainConfig, IResponseMessage, IRoutingConfig} from "@/app/data/data";
 
 const API_BASE = "http://localhost:9095/api/config";
@@ -107,23 +107,35 @@ export async function deleteTool(id: number): Promise<void> {
     if (!res.ok) throw new Error("Failed to delete tool");
 }
 
-export async function linkToolToAgent(agentId: number, toolName: string): Promise<void> {
-    const res = await fetch(`${API_BASE}/link/${agentId}/${toolName}`, { method: "POST", headers: await getAuthHeaders() });
+export async function linkToolToAgent(agentId: number, toolName: string, routeAgent: string): Promise<void> {
+    const res = await fetch(`${API_BASE}/link/${agentId}/${toolName}/route-agent/${routeAgent}`, {
+        method: "POST",
+        headers: await getAuthHeaders()
+    });
     if (!res.ok) throw new Error("Linking failed");
 }
 
-export async function unlinkToolFromAgent(agentId: number, toolName: string): Promise<void> {
-    const res = await fetch(`${API_BASE}/unlink/${agentId}/${toolName}`, { method: "DELETE", headers: await getAuthHeaders() });
+export async function unlinkToolFromAgent(agentId: number, toolName: string, routeAgent: string): Promise<void> {
+    const res = await fetch(`${API_BASE}/unlink/${agentId}/${toolName}/route-agent/${routeAgent}`, {
+        method: "DELETE",
+        headers: await getAuthHeaders()
+    });
     if (!res.ok) throw new Error("Unlinking failed");
 }
 
-export async function linkAgentToRoute(routeId: number, agentId: number): Promise<void> {
-    const res = await fetch(`${API_BASE}/routing-agents/${routeId}/link-agent/${agentId}`, { method: "POST", headers: await getAuthHeaders() });
+export async function linkAgentToRoute(routeId: number, agentId: number, routeAgent: string): Promise<void> {
+    const res = await fetch(`${API_BASE}/routing-agents/${routeId}/link-agent/${agentId}/route-agent/${routeAgent}`, {
+        method: "POST",
+        headers: await getAuthHeaders()
+    });
     if (!res.ok) throw new Error("Agent linking failed");
 }
 
-export async function unlinkAgentFromRoute(routeId: number, agentId: number): Promise<void> {
-    const res = await fetch(`${API_BASE}/routing-agents/${routeId}/unlink-agent/${agentId}`, { method: "DELETE", headers: await getAuthHeaders() });
+export async function unlinkAgentFromRoute(routeId: number, agentId: number, routeAgent: string): Promise<void> {
+    const res = await fetch(`${API_BASE}/routing-agents/${routeId}/unlink-agent/${agentId}/route-agent/${routeAgent}`, {
+        method: "DELETE",
+        headers: await getAuthHeaders()
+    });
     if (!res.ok) throw new Error("Agent unlinking failed");
 }
 
