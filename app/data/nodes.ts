@@ -563,6 +563,47 @@ export const NODE_CATALOG = {
             {"id": "success", "label": "Output", "position": "right"}
         ]
     },
+    "google.driver": {
+        "type": "google.driver",
+        "label": "Google Driver",
+        "color": "#ff7300",
+        "config": {
+            "icon": "",
+            "inputProps": [
+                {
+                    "type": "password",
+                    "values": [],
+                    "name": "clientId",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Client ID",
+                    "required": true
+                },
+                {
+                    "type": "password",
+                    "values": [],
+                    "name": "apiKey",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "API Key",
+                    "required": true
+                },
+                {
+                    "type": "googleDriver",
+                    "name": "googleDriver",
+                    "displayName": "Google Driver",
+                    "defaultValue": "",
+                    "value": "",
+                    "required": false,
+                    "placeholder": ""
+                }
+            ]
+        },
+        "inputs": [
+            {"id": "success", "label": "Input", "position": "left"}
+        ],
+        "outputs": []
+    },
     "database.write": {
         "type": "database.write",
         "label": "Database Write",
@@ -575,8 +616,8 @@ export const NODE_CATALOG = {
                     "name": "driverType",
                     "displayName": "Driver Type",
                     "values": [
-                        { "name": "MySQL", "value": "mysql" },
-                        { "name": "MSSQL", "value": "mssql" }
+                        {"name": "MySQL", "value": "mysql"},
+                        {"name": "MSSQL", "value": "mssql"}
                     ],
                     "defaultValue": "",
                     "value": "",
@@ -633,8 +674,66 @@ export const NODE_CATALOG = {
         "inputs": [
             {"id": "success", "label": "Input", "position": "left"}
         ],
-        "outputs": [
+        "outputs": []
+    },
+    "google.doc": {
+        "type": "google.doc",
+        "label": "Google Doc",
+        "color": "#349bff",
+        "config": {
+            "icon": "",
+            "inputProps": [
+                {
+                    "type": "googleAuth",
+                    "values": [],
+                    "name": "googleAuthCode",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Google Auth",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "clientId",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Client Id",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "clientSecret",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Client Secret",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "apiKey",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "API Key",
+                    "required": true
+                },
+                {
+                    "type": "googleDriver",
+                    "name": "googleDriver",
+                    "displayName": "Google Driver",
+                    "defaultValue": "",
+                    "value": "",
+                    "required": false,
+                    "placeholder": ""
 
-        ]
+                }
+            ]
+        },
+        "inputs": [
+            {"id": "success", "label": "Input", "position": "left"}
+        ],
+        "outputs": []
     }
 };

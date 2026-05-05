@@ -1,13 +1,13 @@
-import type {Metadata} from "next";
-import {Geist, Geist_Mono} from "next/font/google";
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import React from "react";
 import NavBar from "@/app/components/nav-bar";
 import GlobalDialog from "@/app/components/global-dialog";
-import {ReactFlowProvider} from "@xyflow/react";
-import Auth_provider from "@/app/providers/auth_provider";
+import { ReactFlowProvider } from "@xyflow/react";
 import AuthProvider from "@/app/providers/auth_provider";
-
+// Import the Script component
+import Script from "next/script";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -31,13 +31,24 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className="dark">
-        <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+        <head>
+            {/* Using strategy="beforeInteractive" or "afterInteractive"
+                  to ensure they are available for your components.
+                */}
+            <Script
+                src="https://accounts.google.com/gsi/client"
+                strategy="afterInteractive"
+            />
+            <Script
+                src="https://apis.google.com/js/api.js"
+                strategy="afterInteractive"
+            />
+        </head>
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
-            <GlobalDialog/>
+            <GlobalDialog />
             <ReactFlowProvider>
-                <NavBar/>
+                <NavBar />
                 <main>{children}</main>
             </ReactFlowProvider>
         </AuthProvider>

@@ -10,6 +10,8 @@ import {IInputProp, INode} from "@/app/data/data";
 import OrgDataTable from "@/components/reactflow/org-data-table";
 import {GeneralApproval} from "@/components/reactflow/general-approval";
 import LogicController from "@/components/logic-controller";
+import {GoogleDrivePicker} from "@/app/components/google_driver_picker";
+import {GoogleAuth} from "@/app/components/google_auth";
 
 type Props = {
     node: INode;
@@ -198,6 +200,22 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
                                             <div key={prop.name} className={cn("space-y-2", isDisabled && "opacity-20 pointer-events-none")}>
                                                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
                                                 <LogicController node={node} onChange={onChange}/>
+                                            </div>
+                                        );
+
+                                    case "googleDriver":
+                                        return (
+                                            <div key={prop.name} className={cn("space-y-2", isDisabled && "opacity-20 pointer-events-none")}>
+                                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
+                                               <GoogleDrivePicker node={node} onChange={onChange} />
+                                            </div>
+                                        );
+
+                                    case "googleAuth":
+                                        return (
+                                            <div key={prop.name} className={cn("space-y-2", isDisabled && "opacity-20 pointer-events-none")}>
+                                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
+                                                <GoogleAuth node={node} onChange={onChange} />
                                             </div>
                                         );
 
