@@ -1,11 +1,14 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
 
+// Create a safe reference helper to handle both naming variations
+const clientSecret = process.env.KEYCLOAK_CLIENT_SECRET || process.env.KEYCLOAK_SECRET!;
+
 export const authOptions: NextAuthOptions = {
     providers: [
         KeycloakProvider({
             clientId: process.env.KEYCLOAK_ID!,
-            clientSecret: process.env.KEYCLOAK_SECRET!,
+            clientSecret: clientSecret, // 🌟 FIXED
             issuer: process.env.KEYCLOAK_ISSUER,
         }),
     ],
@@ -30,7 +33,7 @@ export const authOptions: NextAuthOptions = {
                     body: new URLSearchParams({
                         grant_type: "refresh_token",
                         client_id: process.env.KEYCLOAK_ID!,
-                        client_secret: process.env.KEYCLOAK_SECRET!,
+                        client_secret: clientSecret, // 🌟 FIXED
                         refresh_token: token.refreshToken as string,
                     }),
                 });
