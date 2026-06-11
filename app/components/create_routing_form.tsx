@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useConfigStore } from "@/components/reactflow/agent-config/data_service";
-import { Save, BrainCircuit } from "lucide-react";
+import { BrainCircuit } from "lucide-react";
 
 export const CreateRoutingForm = ({ onSuccess }: { onSuccess: () => void }) => {
     const { createNewRouting, loading } = useConfigStore();

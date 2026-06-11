@@ -720,8 +720,68 @@ export const NODE_CATALOG = {
                     "required": true
                 },
                 {
-                    "type": "googleDriver",
-                    "name": "googleDriver",
+                    "type": "googleDocDriver",
+                    "name": "googleDocDriver",
+                    "displayName": "Google Driver",
+                    "defaultValue": "",
+                    "value": "",
+                    "required": false,
+                    "placeholder": ""
+
+                }
+            ]
+        },
+        "inputs": [
+            {"id": "success", "label": "Input", "position": "left"}
+        ],
+        "outputs": []
+    },
+    "google.sheet": {
+        "type": "google.sheet",
+        "label": "Google Sheet",
+        "color": "#00a519",
+        "config": {
+            "icon": "",
+            "inputProps": [
+                {
+                    "type": "googleAuth",
+                    "values": [],
+                    "name": "googleAuthCode",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Google Auth",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "clientId",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Client Id",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "clientSecret",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "Client Secret",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "values": [],
+                    "name": "apiKey",
+                    "defaultValue": "",
+                    "value": "",
+                    "displayName": "API Key",
+                    "required": true
+                },
+                {
+                    "type": "googleSheetDriver",
+                    "name": "googleSheetDriver",
                     "displayName": "Google Driver",
                     "defaultValue": "",
                     "value": "",

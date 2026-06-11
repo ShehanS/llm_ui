@@ -607,6 +607,7 @@ const RouteAgentSelector: FC<{ value: any, onChange: (name: string, value: any) 
                                         }} className="p-1 text-slate-600 hover:text-red-500"><Trash2 size={13}/>
                                         </button>
                                         <button type="button" onClick={() => {
+                                            console.log(route)
                                             setSelectedRouteName(route.routeName);
                                             onChange("routeAgent", route.routeName);
                                             setIsOpen(false);
@@ -652,7 +653,6 @@ const RouteAgentSelector: FC<{ value: any, onChange: (name: string, value: any) 
                                                 </div>
                                             </div>
                                             <div className="flex flex-wrap gap-1">
-                                                {/* Tools Section - Increased Font Size and Visibility */}
                                                 {agent.tools?.map((t: IAgentTool) => (
                                                     <span key={t.toolName} className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 text-[11px] font-bold text-emerald-400 border border-emerald-500/30 rounded uppercase tracking-wide shadow-sm">
                                                         {t.toolDisplayName}

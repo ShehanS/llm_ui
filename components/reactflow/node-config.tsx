@@ -10,8 +10,9 @@ import {IInputProp, INode} from "@/app/data/data";
 import OrgDataTable from "@/components/reactflow/org-data-table";
 import {GeneralApproval} from "@/components/reactflow/general-approval";
 import LogicController from "@/components/logic-controller";
-import {GoogleDrivePicker} from "@/app/components/google_driver_picker";
+import {GoogleDriveDocPicker} from "@/app/components/google_driver_doc_picker";
 import {GoogleAuth} from "@/app/components/google_auth";
+import {GoogleDriveSheetPicker} from "@/app/components/google_driver_sheet_picker";
 
 type Props = {
     node: INode;
@@ -203,11 +204,19 @@ export const NodeConfigForm: React.FC<Props> = ({node, onChange, isOpen, setIsOp
                                             </div>
                                         );
 
-                                    case "googleDriver":
+                                    case "googleDocDriver":
                                         return (
                                             <div key={prop.name} className={cn("space-y-2", isDisabled && "opacity-20 pointer-events-none")}>
                                                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
-                                               <GoogleDrivePicker node={node} onChange={onChange} />
+                                               <GoogleDriveDocPicker node={node} onChange={onChange} />
+                                            </div>
+                                        );
+
+                                    case "googleSheetDriver":
+                                        return (
+                                            <div key={prop.name} className={cn("space-y-2", isDisabled && "opacity-20 pointer-events-none")}>
+                                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">{prop.displayName}</label>
+                                                <GoogleDriveSheetPicker node={node} onChange={onChange} />
                                             </div>
                                         );
 

@@ -4,12 +4,12 @@ import React, { useState } from "react";
 
 const SCOPES = "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.readonly";
 
-type GoogleDrivePickerProps = {
+type GoogleDriveDocPickerProps = {
     node: any;
     onChange: (propName: string, value: any) => void;
 };
 
-export const GoogleDrivePicker: React.FC<GoogleDrivePickerProps> = ({ node, onChange }) => {
+export const GoogleDriveDocPicker: React.FC<GoogleDriveDocPickerProps> = ({ node, onChange }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const [newFolderName, setNewFolderName] = useState("");

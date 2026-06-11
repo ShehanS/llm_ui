@@ -297,7 +297,10 @@ const Page: FC = () => {
                     <div className="w-[1px] bg-slate-700 mx-1"/>
 
                     {!traceConnected ? (
-                        <button onClick={() => workflow?.flowId && startLiveTrace(workflow.flowId)} className="px-5 py-2 bg-emerald-600 rounded-lg text-xs font-semibold flex items-center gap-2">
+                        <button onClick={()=>{
+                            workflow?.flowId && startLiveTrace(workflow.flowId);
+                            
+                        }} className="px-5 py-2 bg-emerald-600 rounded-lg text-xs font-semibold flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-white animate-pulse"/> Debug
                         </button>
                     ) : (
